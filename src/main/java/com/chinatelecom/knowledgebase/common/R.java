@@ -16,7 +16,7 @@ public class R <T>{
 
     private T data; //根据需求，传入任意类型的数据
 
-    private Map map = new HashMap(); //动态数据，这个应该是附带的额外的数据
+    private Map map = new HashMap(); //这个应该是附带的额外的数据
 
     //成功
     public static <T> R<T> success(T object) {
