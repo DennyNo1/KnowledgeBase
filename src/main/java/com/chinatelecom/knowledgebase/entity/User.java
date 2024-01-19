@@ -9,14 +9,15 @@ import lombok.Data;
  * @Description 用户实体类
  * @Version 1.0
  */
-@TableName("user")
+
 @Data
 public class User {
     private int id;
     private String username;
     private String password;
-    private String nickname;
+    private String nickName;
     private String phone;
-    private String avatar;
     private String role;
+    private String location;
+    private String department;
 }

@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
  * @Description
  * @Version 1.0
  */
-@TableName("video")
+
 @Data
 public class Video
 {
     private int id;
     private String type;
-    private String uploaderId;
+    private int uploaderId;
     private LocalDateTime date;
 
     private String clickCount;

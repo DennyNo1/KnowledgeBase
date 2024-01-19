@@ -1,9 +1,11 @@
 package com.chinatelecom.knowledgebase.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.mapper.UserMapper;
 import com.chinatelecom.knowledgebase.service.UserService;
+import org.springframework.stereotype.Service;
 
 /**
  * @Author Denny
@@ -11,5 +13,14 @@ import com.chinatelecom.knowledgebase.service.UserService;
  * @Description
  * @Version 1.0
  */
-public class UserImpl extends ServiceImpl<UserMapper, User> implements UserService {
+@Service
+public class UserImpl extends ServiceImpl<UserMapper, User> implements UserService
+{
+    public User getOneUser(int id)
+    {
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("id",id);
+        User one = this.getOne(queryWrapper);
+        return one;
+    }
 }

@@ -11,12 +11,12 @@ import java.time.LocalDateTime;
  * @Description
  * @Version 1.0
  */
-@TableName("article")
+
 @Data
 public class Article {
     private int id;
     private String type;
-    private String uploaderId;
+    private int uploaderId;
     private LocalDateTime date;
     private String content;
     private String clickCount;

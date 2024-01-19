@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @Description
  * @Version 1.0
  */
-@TableName("comment")
+
 @Data
 public class Comment
 {
