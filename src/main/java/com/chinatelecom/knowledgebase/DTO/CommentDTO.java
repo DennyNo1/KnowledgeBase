@@ -14,4 +14,5 @@ public class CommentDTO
 {
     private Comment comment;
     private String nickName;
+    private String department;
 }

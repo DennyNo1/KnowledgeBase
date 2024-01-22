@@ -34,7 +34,7 @@ public class ArticleController {
     CommentImpl commentImpl;
 
 
-    @GetMapping()
+    @GetMapping("/some")
     public R<Page<ArticleDTO>> getArticles(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,

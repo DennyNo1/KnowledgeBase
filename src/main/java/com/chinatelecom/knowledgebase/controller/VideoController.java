@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.DTO.VideoDTO;
 import com.chinatelecom.knowledgebase.common.R;
-import com.chinatelecom.knowledgebase.entity.Article;
 import com.chinatelecom.knowledgebase.entity.Video;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.VideoImpl;
@@ -32,7 +31,8 @@ public class VideoController {
 
     @Autowired
     CommentImpl commentImpl;
-    @GetMapping()
+    //获取全部或者搜索条件下的视频
+    @GetMapping("/some")
     public R<Page<VideoDTO>> getVideos(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
@@ -43,6 +43,7 @@ public class VideoController {
         return R.success(videos,"成功传输video分页数据");
 
     }
+    //获取单个视频
     @GetMapping()
     public R<List> getOneVideo(
             @RequestParam(name = "id",required = true) int id
@@ -52,7 +53,7 @@ public class VideoController {
         Video one = videoImpl.getOne(queryWrapper);
         ArrayList<Object> res = new ArrayList<>();
         res.add(one);
-        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "video");
+        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "static/video");
         res.add(commentsList);
         return R.success(res,"成功传输视频和其的评论");
 

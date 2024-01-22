@@ -38,8 +38,10 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
 
             User oneUser = userImpl.getOneUser(userId);
             String nickName = oneUser.getNickName();
+            String department = oneUser.getDepartment();
             CommentDTO commentDTO = new CommentDTO();
             commentDTO.setComment(comment);
+            commentDTO.setDepartment(department);
             commentDTO.setNickName(nickName);
             res.add(commentDTO);
         }
