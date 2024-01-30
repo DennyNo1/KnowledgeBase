@@ -7,8 +7,10 @@ import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.DTO.VideoDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Article;
+import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
+import com.chinatelecom.knowledgebase.service.impl.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,8 @@ public class ArticleController {
     @Autowired
     CommentImpl commentImpl;
 
+    @Autowired
+    UserImpl userImpl;
 
     @GetMapping("/some")
     public R<Page<ArticleDTO>> getArticles(
@@ -47,15 +51,22 @@ public class ArticleController {
     }
     @GetMapping()
     public R<List> getOneArticle(
-            @RequestParam(name = "id",required = true) int id
+            @RequestParam(name = "id",required = true) int id,
+            @RequestParam(name = "userId") int loginUserId
     ){
+        //查询到一篇文章的记录
         QueryWrapper<Article> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("id",id);
         Article one = articleImpl.getOne(queryWrapper);
+        ArticleDTO articleDTO=articleImpl.getOneArticleDTO(one);
+
         ArrayList<Object> res = new ArrayList<>();
-        res.add(one);
-        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "article");
+        res.add(articleDTO);
+
+        //查找文章的评论
+        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "article",loginUserId);
         res.add(commentsList);
+
         return R.success(res,"成功传输文章和其的评论");
 
 

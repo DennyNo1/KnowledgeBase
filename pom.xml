@@ -56,13 +56,18 @@
             <artifactId>druid-spring-boot-starter</artifactId><!-- 数据连接池，为数据库的连接预先创建一个池子，想用就取，用完放回池子 -->
             <version>1.1.23</version>
         </dependency>
-
-<!--
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>com.ibm.db2</groupId>
+            <artifactId>jcc</artifactId>
+            <version>11.5.0.0</version>
         </dependency>
--->
+
+        <!--
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </dependency>
+        -->
 
 
     </dependencies>

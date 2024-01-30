@@ -1,25 +1,22 @@
 package com.chinatelecom.knowledgebase.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 
 /**
  * @Author Denny
- * @Date 2024/1/17 10:52
+ * @Date 2024/1/23 16:24
  * @Description
  * @Version 1.0
  */
-
 @Data
-public class Comment
-{
+public class Reply {
     private Integer id;
-    private int userId;
+    private int authorId;
     private LocalDateTime date;
     private String content;
-    private String belongType;
-    private int belongId;
+    private String imageUrls;
+    private String videoUrls;
     private int likeCount;
 }

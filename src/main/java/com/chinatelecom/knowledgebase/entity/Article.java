@@ -14,12 +14,14 @@ import java.time.LocalDateTime;
 
 @Data
 public class Article {
-    private int id;
+    private Integer id;
     private String type;
     private int uploaderId;
     private LocalDateTime date;
     private String content;
-    private String clickCount;
+    private int clickCount;
     private String title;
+    private int commentCount;
+    private String label;
 
 }

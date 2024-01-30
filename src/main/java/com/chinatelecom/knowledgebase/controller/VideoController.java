@@ -35,25 +35,28 @@ public class VideoController {
     @GetMapping("/some")
     public R<Page<VideoDTO>> getVideos(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
-            @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
+            @RequestParam(name = "pageSize", required = true, defaultValue = "12") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName
     ){
         Page<VideoDTO> videos = videoImpl.getVideos(page, pageSize, queryName);
         //理论上不会有失败的数据
+
         return R.success(videos,"成功传输video分页数据");
 
     }
     //获取单个视频
     @GetMapping()
     public R<List> getOneVideo(
-            @RequestParam(name = "id",required = true) int id
+            @RequestParam(name = "id",required = true) int id,
+            @RequestParam(name = "userId") int loginUserId
     ){
         QueryWrapper<Video> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("id",id);
         Video one = videoImpl.getOne(queryWrapper);
+        VideoDTO oneVideoDTO = videoImpl.getOneVideoDTO(one);
         ArrayList<Object> res = new ArrayList<>();
-        res.add(one);
-        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "static/video");
+        res.add(oneVideoDTO);
+        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "video",loginUserId);
         res.add(commentsList);
         return R.success(res,"成功传输视频和其的评论");
 

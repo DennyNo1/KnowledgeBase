@@ -47,16 +47,22 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
         //遍历每个List<Video>的元素.List<Video>的名字叫records.
         for (Video video:videoPage.getRecords())
         {
-            int uploaderId = video.getUploaderId();
-            User user=userImpl.getOneUser(uploaderId);
-            VideoDTO videoDTO = new VideoDTO();
-            videoDTO.setVideo(video);
-            videoDTO.setDepartment(user.getDepartment());
-            videoDTO.setNickName(user.getNickName());
-            list.add(videoDTO);
+            VideoDTO oneVideoDTO = this.getOneVideoDTO(video);
+            list.add(oneVideoDTO);
         }
         videoDTOPage.setRecords(list);
         return videoDTOPage;
 
+    }
+
+    //通过一个video记录，去查这条记录有关的user记录，并组合成一个集合。
+    public VideoDTO getOneVideoDTO(Video video){
+        int uploaderId = video.getUploaderId();
+        User user=userImpl.getOneUser(uploaderId);
+        VideoDTO videoDTO = new VideoDTO();
+        videoDTO.setVideo(video);
+        videoDTO.setDepartment(user.getDepartment());
+        videoDTO.setNickName(user.getNickName());
+        return videoDTO;
     }
 }

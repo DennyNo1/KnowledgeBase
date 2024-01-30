@@ -41,17 +41,24 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
 
         for(Article article:articlePage.getRecords())
         {
-            ArticleDTO articleDTO=new ArticleDTO();
-            int uploaderId = article.getUploaderId();
-            User user = userImpl.getOneUser(uploaderId);
-            articleDTO.setArticle(article);
-            articleDTO.setDepartment(user.getDepartment());
-            articleDTO.setNickName(user.getNickName());
+            ArticleDTO articleDTO = this.getOneArticleDTO(article);
             list.add(articleDTO);
         }
         articleDTOPage.setRecords(list);
         return articleDTOPage;
 
+    }
+
+    //通过一个article记录，去查这条记录有关的user记录，并组合成一个集合。
+    public ArticleDTO getOneArticleDTO(Article article)
+    {
+        ArticleDTO articleDTO=new ArticleDTO();
+        int uploaderId = article.getUploaderId();
+        User user = userImpl.getOneUser(uploaderId);
+        articleDTO.setArticle(article);
+        articleDTO.setDepartment(user.getDepartment());
+        articleDTO.setNickName(user.getNickName());
+        return articleDTO;
     }
 
 }
