@@ -24,13 +24,12 @@ import java.util.List;
  * @Version 1.0
  */
 @RestController
-@RequestMapping("/video")
+@RequestMapping("/video")//这里已经多加了一层路径，所以下面可以直接用id代表videoId等。
 public class VideoController {
     @Autowired
     VideoImpl videoImpl;
 
-    @Autowired
-    CommentImpl commentImpl;
+
     //获取全部或者搜索条件下的视频
     @GetMapping("/some")
     public R<Page<VideoDTO>> getVideos(
@@ -46,19 +45,29 @@ public class VideoController {
     }
     //获取单个视频
     @GetMapping()
-    public R<List> getOneVideo(
+    public R<VideoDTO> getOneVideo(
             @RequestParam(name = "id",required = true) int id,
             @RequestParam(name = "userId") int loginUserId
     ){
+
+        //ArrayList<Object> res = new ArrayList<>();
+
+        //video本身的数据
         QueryWrapper<Video> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("id",id);
         Video one = videoImpl.getOne(queryWrapper);
         VideoDTO oneVideoDTO = videoImpl.getOneVideoDTO(one);
-        ArrayList<Object> res = new ArrayList<>();
-        res.add(oneVideoDTO);
+        return  R.success(oneVideoDTO,"成功传输视频");
+
+        //
+
+/*        res.add(oneVideoDTO);
+
+        //该video的评论的数据
         List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "video",loginUserId);
         res.add(commentsList);
-        return R.success(res,"成功传输视频和其的评论");
+
+        return R.success(res,"成功传输视频和其的评论");*/
 
 
     }

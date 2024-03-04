@@ -77,7 +77,7 @@ public class QuestionController
 
     }
 
-    //查看一个问题的所有数据
+/*    //查看一个问题的所有数据
     @GetMapping
     public R<List> getOneQuestion(
             @RequestParam(name = "id",required = true) int id,
@@ -91,5 +91,5 @@ public class QuestionController
         return R.success(oneQuestion,"传输一个问题的数据成功");
 
 
-    }
+    }*/
 }

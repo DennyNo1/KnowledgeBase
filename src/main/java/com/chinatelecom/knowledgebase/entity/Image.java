@@ -4,22 +4,16 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * @Author Denny
- * @Date 2024/1/23 16:24
+ * @Date 2024/3/1 11:40
  * @Description
  * @Version 1.0
  */
 @Data
-public class Reply {
+public class Image {
     @TableId(type = IdType.AUTO)
     private Integer id;
-    private String content;
-    private Integer userId;
-    private LocalDateTime date;
-    private Integer commentId;
-    private String secondReplyName;
-
+    private Integer articleId;
+    private String imageUrl;
 }

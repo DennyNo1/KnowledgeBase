@@ -14,4 +14,6 @@ public class ArticleDTO {
     private Article article;
     private String nickName;
     private String department;
+    private String avatar;
+    private String role;
 }

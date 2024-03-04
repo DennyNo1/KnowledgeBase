@@ -66,7 +66,7 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         return questionDTOPage;
 
     }
-    //查询一个问题的数据
+    /*//查询一个问题的数据
     public List getOneQuestion(int questionId,int loginUserId){
         //问题+回答+评论的列表
         List res=new ArrayList();
@@ -123,5 +123,5 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         res.add(allReply);
         return res;
 
-    }
+    }*/
 }

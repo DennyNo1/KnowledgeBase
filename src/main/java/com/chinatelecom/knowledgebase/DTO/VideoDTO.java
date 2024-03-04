@@ -16,5 +16,7 @@ public class VideoDTO
     private Video video;
     private String nickName;
     private String department;
+    private String avatar;
+    private String role;
 
 }

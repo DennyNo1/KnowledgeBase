@@ -1,5 +1,7 @@
 package com.chinatelecom.knowledgebase.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -12,6 +14,7 @@ import java.time.LocalDateTime;
  */
 @Data
 public class Question {
+    @TableId(type = IdType.AUTO)
     private Integer id;
     private int questionerId;
     private LocalDateTime date;

@@ -28,6 +28,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
     UserImpl userImpl;
     public Page<ArticleDTO> getArticles(int page,int pageSize,String queryName)
     {
+        //
         Page<Article> articlePage = new Page<>(page, pageSize);
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
         if(queryName!=null){

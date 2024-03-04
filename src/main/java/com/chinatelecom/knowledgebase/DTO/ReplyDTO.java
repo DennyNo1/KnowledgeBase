@@ -13,7 +13,9 @@ import lombok.Data;
 public class ReplyDTO
 {
     private Reply reply;
-    private String username;
+    //用户的信息
+    private String nickName;
+    private String department;
     private String avatar;
-    private boolean isLike=false;
+    private String role;
 }

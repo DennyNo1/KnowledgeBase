@@ -50,7 +50,7 @@ public class ArticleController {
 
     }
     @GetMapping()
-    public R<List> getOneArticle(
+    public R<ArticleDTO> getOneArticle(
             @RequestParam(name = "id",required = true) int id,
             @RequestParam(name = "userId") int loginUserId
     ){
@@ -60,14 +60,16 @@ public class ArticleController {
         Article one = articleImpl.getOne(queryWrapper);
         ArticleDTO articleDTO=articleImpl.getOneArticleDTO(one);
 
-        ArrayList<Object> res = new ArrayList<>();
-        res.add(articleDTO);
+        return R.success(articleDTO,"成功传输课件");
 
-        //查找文章的评论
+/*        ArrayList<Object> res = new ArrayList<>();
+        res.add(articleDTO);*/
+
+/*        //查找文章的评论
         List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "article",loginUserId);
         res.add(commentsList);
 
-        return R.success(res,"成功传输文章和其的评论");
+        return R.success(res,"成功传输文章和其的评论");*/
 
 
     }

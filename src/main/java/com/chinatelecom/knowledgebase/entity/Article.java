@@ -1,5 +1,7 @@
 package com.chinatelecom.knowledgebase.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class Article {
+    @TableId(type = IdType.AUTO)//让id跟随数据库 ID 自增
     private Integer id;
     private String type;
     private int uploaderId;

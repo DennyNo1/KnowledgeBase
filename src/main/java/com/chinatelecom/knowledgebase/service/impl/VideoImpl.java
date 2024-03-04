@@ -30,7 +30,7 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
     //第几页，每页有几个，搜索名
     public Page<VideoDTO> getVideos(int page,int pageSize,String queryName)
     {
-        Page<Video> videoPage = new Page<>(page, pageSize);//相当于limit语句，还未开始查询
+        Page<Video> videoPage = new Page<>(page, pageSize);//相当于limit语句。此时还未开始查询
         QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();//条件查询，相当与where语句
         if(queryName!=null){
             videoQueryWrapper.like("title",queryName);
@@ -63,6 +63,8 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
         videoDTO.setVideo(video);
         videoDTO.setDepartment(user.getDepartment());
         videoDTO.setNickName(user.getNickName());
+        videoDTO.setAvatar(user.getAvatar());
+        videoDTO.setRole(user.getRole());
         return videoDTO;
     }
 }
