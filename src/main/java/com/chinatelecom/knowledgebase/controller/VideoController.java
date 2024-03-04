@@ -5,14 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.DTO.VideoDTO;
 import com.chinatelecom.knowledgebase.common.R;
+import com.chinatelecom.knowledgebase.entity.Comment;
 import com.chinatelecom.knowledgebase.entity.Video;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.VideoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +44,7 @@ public class VideoController {
     //获取单个视频
     @GetMapping()
     public R<VideoDTO> getOneVideo(
-            @RequestParam(name = "id",required = true) int id,
+            @RequestParam(name = "videoId",required = true) int id,
             @RequestParam(name = "userId") int loginUserId
     ){
 
@@ -59,16 +57,20 @@ public class VideoController {
         VideoDTO oneVideoDTO = videoImpl.getOneVideoDTO(one);
         return  R.success(oneVideoDTO,"成功传输视频");
 
-        //
+    }
+    @PostMapping("/add")
+    public R uploadVideo(@RequestBody Video video){
+        if(video.getUrl()==null)
+            return R.error("上传失败，请输入视频地址");
+        boolean saveRes = videoImpl.save(video);
+        if(saveRes)
+        {
+            return R.success(null,"上传视频成功");
 
-/*        res.add(oneVideoDTO);
-
-        //该video的评论的数据
-        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "video",loginUserId);
-        res.add(commentsList);
-
-        return R.success(res,"成功传输视频和其的评论");*/
-
+        }
+        else {
+            throw new RuntimeException("上传视频失败，可能是由于数据库操作异常");
+        }
 
     }
 }

@@ -1,7 +1,11 @@
 package com.chinatelecom.knowledgebase.DTO;
 
 import com.chinatelecom.knowledgebase.entity.Article;
+import com.chinatelecom.knowledgebase.entity.Attachment;
+import com.chinatelecom.knowledgebase.entity.Image;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @Author Denny
@@ -11,9 +15,8 @@ import lombok.Data;
  */
 @Data
 public class ArticleDTO {
-    private Article article;
-    private String nickName;
-    private String department;
-    private String avatar;
-    private String role;
+    private ArticleListDTO articleListDTO;
+    //简单的话其实只用imageUrl。但为了后续的扩展，还是设置为对象。
+    private List<Image> imageList;
+    private List<Attachment> attachmentList;
 }

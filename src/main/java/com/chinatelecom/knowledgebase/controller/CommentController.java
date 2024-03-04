@@ -38,7 +38,7 @@ public class CommentController
     public R addComment(@RequestBody Comment comment)
     {
         if(comment.getContent()==null)
-            return R.error("请输入评论的内容");
+            return R.error("评论失败，请输入评论的内容");
         boolean saveRes = commentImpl.save(comment);
         if (saveRes) {
             return R.success(null, "添加评论成功");

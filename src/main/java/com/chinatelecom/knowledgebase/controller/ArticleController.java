@@ -3,19 +3,19 @@ package com.chinatelecom.knowledgebase.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.ArticleDTO;
+import com.chinatelecom.knowledgebase.DTO.ArticleListDTO;
 import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.DTO.VideoDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Article;
+import com.chinatelecom.knowledgebase.entity.Attachment;
 import com.chinatelecom.knowledgebase.entity.User;
+import com.chinatelecom.knowledgebase.entity.Video;
 import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,40 +38,46 @@ public class ArticleController {
     @Autowired
     UserImpl userImpl;
 
+    //获取文章列表
     @GetMapping("/some")
-    public R<Page<ArticleDTO>> getArticles(
+    public R<Page<ArticleListDTO>> getArticleList(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName
     ){
-        Page<ArticleDTO> articles = articleImpl.getArticles(page, pageSize, queryName);
+        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName);
         //理论上不会有失败的数据
-        return R.success(articles,"成功传输article分页数据");
+        return R.success(articleList,"成功传输article分页数据");
 
     }
+
+
+    //
     @GetMapping()
-    public R<ArticleDTO> getOneArticle(
-            @RequestParam(name = "id",required = true) int id,
-            @RequestParam(name = "userId") int loginUserId
+    public R<ArticleDTO> getArticle(
+            @RequestParam(name = "articleId",required = true) int articleId
+
     ){
         //查询到一篇文章的记录
-        QueryWrapper<Article> queryWrapper=new QueryWrapper<>();
-        queryWrapper.eq("id",id);
-        Article one = articleImpl.getOne(queryWrapper);
-        ArticleDTO articleDTO=articleImpl.getOneArticleDTO(one);
+        ArticleDTO articleDTO = articleImpl.getArticleDTO(articleId);
+
 
         return R.success(articleDTO,"成功传输课件");
 
-/*        ArrayList<Object> res = new ArrayList<>();
-        res.add(articleDTO);*/
-
-/*        //查找文章的评论
-        List<CommentDTO> commentsList = commentImpl.getComments(one.getId(), "article",loginUserId);
-        res.add(commentsList);
-
-        return R.success(res,"成功传输文章和其的评论");*/
-
-
     }
+
+    @PostMapping("/add")
+    public R addArticle(@RequestBody Article article)
+    {
+        if(article.getContent()==null||article.getTitle()==null)
+            return R.error("上传失败，请输入文章的标题、内容");
+        boolean saveRes = articleImpl.save(article);
+        if (saveRes) {
+            return R.success(null, "上传成功");
+        } else {
+            throw new RuntimeException("上传失败，可能是由于数据库操作异常");
+        }
+    }
+
 
 }

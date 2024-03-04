@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.chinatelecom.knowledgebase.DTO.ArticleDTO;
-import com.chinatelecom.knowledgebase.entity.Article;
-import com.chinatelecom.knowledgebase.entity.User;
-import com.chinatelecom.knowledgebase.entity.Video;
+import com.chinatelecom.knowledgebase.DTO.ArticleListDTO;
+import com.chinatelecom.knowledgebase.entity.*;
 import com.chinatelecom.knowledgebase.mapper.ArticleMapper;
 import com.chinatelecom.knowledgebase.service.ArticleService;
 import org.springframework.beans.BeanUtils;
@@ -26,40 +25,70 @@ import java.util.List;
 public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements ArticleService {
     @Autowired
     UserImpl userImpl;
-    public Page<ArticleDTO> getArticles(int page,int pageSize,String queryName)
+    @Autowired
+    ImageImpl imageImpl;
+    @Autowired
+    AttachmentImpl attachmentImpl;
+
+    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName)
     {
-        //
+
         Page<Article> articlePage = new Page<>(page, pageSize);
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
         if(queryName!=null){
             articleQueryWrapper.like("title",queryName);
         }
+        //根据页的条件，查询出article对象的page
         this.page(articlePage,articleQueryWrapper);
 
-        Page<ArticleDTO> articleDTOPage=new Page<>(page,pageSize);
-        BeanUtils.copyProperties(articlePage,articleDTOPage,"records");
-        List<ArticleDTO> list=new ArrayList<>();
+        Page<ArticleListDTO> articleListDTOPage=new Page<>(page,pageSize);
+        BeanUtils.copyProperties(articlePage,articleListDTOPage,"records");
+        List<ArticleListDTO> list=new ArrayList<>();
 
         for(Article article:articlePage.getRecords())
         {
-            ArticleDTO articleDTO = this.getOneArticleDTO(article);
-            list.add(articleDTO);
+            ArticleListDTO articleListDTO = this.getArticleListDTO(article);
+            Article article1 = articleListDTO.getArticle();
+            article1.setContent(null);
+            list.add(articleListDTO);
         }
-        articleDTOPage.setRecords(list);
-        return articleDTOPage;
+        articleListDTOPage.setRecords(list);
+        return articleListDTOPage;
 
     }
 
     //通过一个article记录，去查这条记录有关的user记录，并组合成一个集合。
-    public ArticleDTO getOneArticleDTO(Article article)
+    public ArticleListDTO getArticleListDTO(Article article)
     {
-        ArticleDTO articleDTO=new ArticleDTO();
+        ArticleListDTO articleListDTO=new ArticleListDTO();
         int uploaderId = article.getUploaderId();
         User user = userImpl.getOneUser(uploaderId);
-        articleDTO.setArticle(article);
-        articleDTO.setDepartment(user.getDepartment());
-        articleDTO.setNickName(user.getNickName());
+        articleListDTO.setArticle(article);
+
+        articleListDTO.setDepartment(user.getDepartment());
+        articleListDTO.setNickName(user.getNickName());
+        articleListDTO.setRole(user.getRole());
+        articleListDTO.setAvatar(user.getAvatar());
+        return articleListDTO;
+    }
+
+    public ArticleDTO getArticleDTO(int articleId)
+    {
+
+        Article article = this.getById(articleId);
+        ArticleListDTO articleListDTO = this.getArticleListDTO(article);
+
+        ArticleDTO articleDTO=new ArticleDTO();
+        articleDTO.setArticleListDTO(articleListDTO);
+
+        List<Image> imageList = imageImpl.getImageList(articleId);
+        List<Attachment> attachmentList = attachmentImpl.getAttachmentList(articleId);
+        articleDTO.setImageList(imageList);
+        articleDTO.setAttachmentList(attachmentList);
+
         return articleDTO;
+
+
     }
 
 }
