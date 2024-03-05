@@ -1,22 +1,18 @@
 package com.chinatelecom.knowledgebase.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.QuestionDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Question;
 import com.chinatelecom.knowledgebase.service.impl.QuestionImpl;
+import com.chinatelecom.knowledgebase.service.impl.UserImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -32,6 +28,8 @@ public class QuestionController
 {
     @Autowired
     QuestionImpl questionImpl;
+    @Autowired
+    UserImpl userImpl;
     //提问，就是添加一个新问题。逻辑比较简单，直接写在控制器里。
     @PostMapping("/add")
     public R addQuestion(@RequestBody Question question){
@@ -67,29 +65,51 @@ public class QuestionController
         }
     }
 
-    @GetMapping("/some") R<Page<QuestionDTO>> getQuestions(
+    @GetMapping("/some")
+    public R<Page<QuestionDTO>> getQuestionList(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
-            @RequestParam(name="queryName",required = false) String queryName
+            @RequestParam(name="queryName",required = false) String queryName,
+            @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked
     ){
-        Page<QuestionDTO> questions = questionImpl.getQuestions(page, pageSize, queryName);
+
+        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked);
         return R.success(questions,"成功传输question分页数据");
 
     }
 
-/*    //查看一个问题的所有数据
-    @GetMapping
-    public R<List> getOneQuestion(
-            @RequestParam(name = "id",required = true) int id,
-            @RequestParam(name="userId") int loginUserId
-            //如果确实想要处理由于缺少必选参数 id 而抛出的异常，通常情况下 Spring MVC 会提前捕获这个异常，并通过统一异常处理器（例如全局异常处理器 @ControllerAdvice 中的方法）来处理，而不是在每个方法内部都手动处理。
-    ){
-        int questionId=id;
-        List oneQuestion = questionImpl.getOneQuestion(questionId,loginUserId);
-        if(oneQuestion.size()==0)
-            return R.error("查找不到该问题，请输入正确的id");
-        return R.success(oneQuestion,"传输一个问题的数据成功");
+    @PostMapping("/check")
+    public R check(@RequestBody Map<String,Integer> data){
+
+        Integer questionId = data.get("questionId");
+        Integer isChecked = data.get("isChecked");
+        if(isChecked<-1||isChecked>1)
+            return R.error("审核结果值有误，请重新设置");
+        try {
+        //先查再改
+        Question newQuestion = questionImpl.getById(questionId);
+        newQuestion.setIsChecked(isChecked);
+
+            questionImpl.updateById(newQuestion);
+            return R.success(null,"审核结果更新成功");
+        }
+        catch (Exception e)
+        {
+            return R.error("审核结果更新失败，可能由于该问题不存在");
+
+        }
+
+    }
+    //返回一个list，里面包含questiondto和它的评论区
+    @GetMapping()
+    public R<QuestionDTO> getQuestion(@RequestParam(name = "questionId",required = true) int questionId){
+
+        QuestionDTO questionDTO = questionImpl.getQuestionDTO(questionId);
+        return R.success(questionDTO,"传输问题相关数据成功");
 
 
-    }*/
+    }
+
+
+
 }

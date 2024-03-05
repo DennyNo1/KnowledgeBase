@@ -22,5 +22,6 @@ public class Question {
     private String content;
     private String imageUrls;
     private String videoUrls;
-    private String isSolved;
+    private Integer isSolved;
+    private Integer isChecked;
 }

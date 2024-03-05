@@ -15,5 +15,7 @@ public class QuestionDTO
     private Question question;
     private String nickName;
     private String department;
+    private String role;
+    private String avatar;
 
 }

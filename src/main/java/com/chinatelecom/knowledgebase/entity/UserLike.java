@@ -16,7 +16,7 @@ public class UserLike {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private int userId;
-    private String type;
-    private int typeId;
+    private String belongType;
+    private int belongId;
 
 }

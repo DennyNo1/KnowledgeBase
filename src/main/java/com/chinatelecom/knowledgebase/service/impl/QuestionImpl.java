@@ -3,10 +3,7 @@ package com.chinatelecom.knowledgebase.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.DTO.QuestionDTO;
-import com.chinatelecom.knowledgebase.DTO.ReplyDTO;
-import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.*;
 import com.chinatelecom.knowledgebase.mapper.QuestionMapper;
 import com.chinatelecom.knowledgebase.service.QuestionService;
@@ -36,9 +33,10 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     @Autowired
     CommentImpl commentImpl;
     //mybatisplus竟然不支持连表查询
-    public Page<QuestionDTO> getQuestions(int page,int pageSize,String queryName){
+    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked){
         Page<Question> questionPage=new Page<>(page,pageSize);
         QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("is_checked",isChecked);
         if(queryName!=null){
             queryWrapper.like("title",queryName);
         }
@@ -54,17 +52,32 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
 
         for(Question question:questionPage.getRecords())
         {
-            int questionerId = question.getQuestionerId();
-            User oneUser = userImpl.getOneUser(questionerId);
-            QuestionDTO questionDTO = new QuestionDTO();
-            questionDTO.setQuestion(question);
-            questionDTO.setNickName(oneUser.getNickName());
-            questionDTO.setDepartment(oneUser.getDepartment());
+            QuestionDTO questionDTO = this.getPartOfUser(question);
             list.add(questionDTO);
         }
         questionDTOPage.setRecords(list);
         return questionDTOPage;
 
+    }
+
+    public QuestionDTO getQuestionDTO(int questionId)
+    {
+        Question byId = this.getById(questionId);
+       return this.getPartOfUser(byId);
+
+
+
+    }
+    public QuestionDTO getPartOfUser( Question question){
+        int questionerId = question.getQuestionerId();
+        User oneUser = userImpl.getOneUser(questionerId);
+        QuestionDTO questionDTO = new QuestionDTO();
+        questionDTO.setQuestion(question);
+        questionDTO.setNickName(oneUser.getNickName());
+        questionDTO.setDepartment(oneUser.getDepartment());
+        questionDTO.setRole(oneUser.getRole());
+        questionDTO.setAvatar(oneUser.getAvatar());
+        return questionDTO;
     }
     /*//查询一个问题的数据
     public List getOneQuestion(int questionId,int loginUserId){
