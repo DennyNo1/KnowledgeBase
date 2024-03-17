@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.*;
  */
 @Slf4j//用于在控制台输出日志
 @RestController
-@RequestMapping("/login")
+@RequestMapping("/user")
 public class UserController
 {
     @Autowired
     UserImpl userImpl;
 
     //简单的逻辑还是写在controller里吧
-    @PostMapping
+    @PostMapping("/login")
     //@ResponseBody
     //验证登录。现在我假设，前端会传过来一个用户名和密码。
     public R<User> login(@RequestBody User user) throws JsonProcessingException {
@@ -37,31 +37,7 @@ public class UserController
         //查询
         User one = userImpl.getOne(wrapper);
 
-
-/*        // 将User对象转换为JSON字符串
-
-
-        StringBuilder jsonBuilder = new StringBuilder();
-
-        // 手动构建JSON字符串
-        jsonBuilder.append("{");
-        jsonBuilder.append("\"name\": \"John Doe\",");
-        jsonBuilder.append("\"age\": 30,");
-        jsonBuilder.append("\"city\": \"New York\",");
-        jsonBuilder.append("\"isStudent\": false,");
-        jsonBuilder.append("\"grades\": [90, 85, 92],");
-
-        // 嵌套的Address对象
-        jsonBuilder.append("\"address\": {");
-        jsonBuilder.append("\"street\": \"123 Main St\",");
-        jsonBuilder.append("\"zipCode\": \"10001\"");
-        jsonBuilder.append("}");
-
-        jsonBuilder.append("}");
-        return jsonBuilder;*/
-
         //log.info(one.getPhone());从数据库查询到的对象存在
-
         if(one==null)
         {
             return R.error("不存在该用户");
@@ -72,6 +48,16 @@ public class UserController
         }
         else return R.error("请输入正确的密码");
         //return one;
+    }
+    @PostMapping("/register")
+    public R regiter(@RequestBody User user){
+
+        boolean saveRes = userImpl.save(user);
+        if (saveRes) {
+            return R.success(null, "新用户注册成功");
+        } else {
+            throw new RuntimeException("新用户注册失败，可能是由于数据库操作异常");
+        }
     }
 
 }
