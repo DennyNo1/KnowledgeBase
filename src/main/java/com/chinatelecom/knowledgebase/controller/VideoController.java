@@ -33,9 +33,10 @@ public class VideoController {
     public R<Page<VideoDTO>> getVideos(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "12") int pageSize,
-            @RequestParam(name="queryName",required = false) String queryName
+            @RequestParam(name="queryName",required = false) String queryName,
+            @RequestParam(name="type",required = false) String type
     ){
-        Page<VideoDTO> videos = videoImpl.getVideos(page, pageSize, queryName);
+        Page<VideoDTO> videos = videoImpl.getVideos(page, pageSize, queryName,type);
         //理论上不会有失败的数据
 
         return R.success(videos,"成功传输video分页数据");

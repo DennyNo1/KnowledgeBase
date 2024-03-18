@@ -28,12 +28,15 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
     @Autowired
     UserImpl userImpl;
     //第几页，每页有几个，搜索名
-    public Page<VideoDTO> getVideos(int page,int pageSize,String queryName)
+    public Page<VideoDTO> getVideos(int page,int pageSize,String queryName,String type)
     {
         Page<Video> videoPage = new Page<>(page, pageSize);//相当于limit语句。此时还未开始查询
         QueryWrapper<Video> videoQueryWrapper = new QueryWrapper<>();//条件查询，相当与where语句
         if(queryName!=null){
             videoQueryWrapper.like("title",queryName);
+        }
+        if(type!=null){
+            videoQueryWrapper.eq("type",type);
         }
         this.page(videoPage,videoQueryWrapper);//这个应该就是查询了，并把结果放在videoPage
         //还需要把Page里的List<Video>替换成List<VideoDto>
