@@ -10,8 +10,18 @@ import com.chinatelecom.knowledgebase.entity.Video;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.VideoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +69,9 @@ public class VideoController {
         return  R.success(oneVideoDTO,"成功传输视频");
 
     }
+    //上传视频的记录，持久化到数据库
     @PostMapping("/add")
-    public R uploadVideo(@RequestBody Video video){
+    public R addVideo(@RequestBody Video video){
         if(video.getUrl()==null)
             return R.error("上传失败，请输入视频地址");
         boolean saveRes = videoImpl.save(video);
@@ -74,4 +85,46 @@ public class VideoController {
         }
 
     }
+
+    //将前端传过来的视频文件，保存到指定文件夹
+    @Value("${upload.video.directory}")
+    private String videoUploadDirectory;
+
+    @PostMapping("/upload")
+    public R uploadVideo(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            return R.error("文件为空，上传失败");
+        }
+
+        try {
+            // 获取文件名
+            String originalFilename = file.getOriginalFilename();
+            Path destination = Paths.get(videoUploadDirectory, originalFilename);
+
+            // 确保目标目录存在
+            Files.createDirectories(destination.getParent());
+
+
+            // 检查目标目录是否存在以及目标文件是否已存在
+            if (!Files.exists(destination.getParent())) {
+                Files.createDirectories(destination.getParent());
+            } else if (Files.exists(destination)) {  // 检查文件是否已存在
+                return R.error("已存在同名文件，请修改文件名后再上传");
+            }
+
+            // 将文件保存到指定目录
+            file.transferTo(destination.toFile());
+
+            // 返回成功的响应，这里可以返回文件的访问路径（如果需要的话）
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setLocation(URI.create("/video/" + originalFilename));
+            return R.success(originalFilename,"上传成功");
+
+        } catch (IOException e) {
+            return R.error("Failed to store file: " + e.getMessage());
+        }
+    }
+
+
+
 }

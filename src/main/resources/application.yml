@@ -14,6 +14,18 @@ spring:
       username: root
       password: root
 
+
+
+
+  servlet:
+    multipart:
+      enabled: true # 启用多部分解析器（默认通常是启用的）
+      max-file-size: 512MB # 单个文件最大上传大小
+      max-request-size: 512MB # 整个请求的最大大小（包括所有上传文件）
+  config:
+    activate:
+      on-profile:
+
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射
@@ -23,5 +35,11 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 #用来指定上传文件的存储目录
-knowledgebase:
-  path: E:\KnowLedgeBase\src\main\resources\upload\
+upload:
+  video:
+    directory: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\video\\
+
+
+
+
+
