@@ -4,6 +4,7 @@ import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.entity.Video;
 import lombok.Data;
 
+
 /**
  * @Author Denny
  * @Date 2024/1/18 16:24
@@ -14,9 +15,6 @@ import lombok.Data;
 public class VideoDTO
 {
     private Video video;
-    private String nickName;
-    private String department;
-    private String avatar;
-    private String role;
+    private User user;
 
 }

@@ -64,10 +64,7 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
         User user=userImpl.getOneUser(uploaderId);
         VideoDTO videoDTO = new VideoDTO();
         videoDTO.setVideo(video);
-        videoDTO.setDepartment(user.getDepartment());
-        videoDTO.setNickName(user.getNickName());
-        videoDTO.setAvatar(user.getAvatar());
-        videoDTO.setRole(user.getRole());
+        videoDTO.setUser(user);
         return videoDTO;
     }
 }

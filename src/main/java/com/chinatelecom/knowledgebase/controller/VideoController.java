@@ -55,8 +55,9 @@ public class VideoController {
     //获取单个视频
     @GetMapping()
     public R<VideoDTO> getOneVideo(
-            @RequestParam(name = "videoId",required = true) int id,
-            @RequestParam(name = "userId") int loginUserId
+            @RequestParam(name = "videoId",required = true) int id
+            //这个登录用户id是用于点赞的，现在先没用
+//            @RequestParam(name = "userId",required = false) int loginUserId
     ){
 
         //ArrayList<Object> res = new ArrayList<>();
