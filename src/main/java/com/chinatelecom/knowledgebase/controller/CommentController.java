@@ -8,6 +8,8 @@ import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * @Author Denny
  * @Date 2024/1/17 15:11
@@ -21,15 +23,15 @@ public class CommentController
     @Autowired
     CommentImpl commentImpl;
 
+    //参考了下b站的评论区，可以把所有评论放在一页里。所以没必要像贴吧那样复杂化分页。
     @GetMapping()
-    public R<Page<CommentDTO>> getCommentList(
+    public R<List<CommentDTO>> getCommentList(
             @RequestParam(name = "belongType",required = true) String belongType,//评论所属的内容
-            @RequestParam(name = "belongId",required = true) int belongId,//评论所属内容的id
-            @RequestParam(name = "page", required = true, defaultValue = "1") int page,
-            @RequestParam(name = "pageSize",  defaultValue = "6") int pageSize
+            @RequestParam(name = "belongId",required = true) int belongId//评论所属内容的id
+
     ){
-        Page<CommentDTO> commentDTOList = commentImpl.getCommentList(belongType, belongId, page, pageSize);
-        return R.success(commentDTOList,"成功传输评论");
+        List<CommentDTO> commentDTOList = commentImpl.getCommentList(belongType, belongId);
+        return R.success(commentDTOList,"成功传输评论区");
 
     }
 

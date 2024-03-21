@@ -83,44 +83,40 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
         return true;
 
     }
-    public Page<CommentDTO> getCommentList(String belongType, int belongId,int page,int pageSize){
+    public List<CommentDTO> getCommentList(String belongType, int belongId){
 
-        Page<CommentDTO> res=new Page<>(page,pageSize);
+        List<CommentDTO> res=new ArrayList<>();
 
         //获取comment的记录
-        Page<Comment> commentPage = new Page<>(page,pageSize);
+
+        //查询包装器
         QueryWrapper<Comment> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("belong_id",belongId);
         queryWrapper.eq("belong_type",belongType);
-        this.page(commentPage,queryWrapper);
-
-
-        BeanUtils.copyProperties(commentPage,res,"records");
+        //单评论的列表
+        List<Comment> list1 = this.list(queryWrapper);
 
         //将comment升级成commentDTO
-        List<CommentDTO> list=new ArrayList<>();
-        for (Comment comment:commentPage.getRecords()){
-
+        for (Comment comment:list1
+             ) {
             CommentDTO commentDTO=new CommentDTO();
-            commentDTO.setComment(comment);
-
-            //一是查询comment下的replyDTOList
-            Integer id = comment.getId();
-            List<ReplyDTO> replyDTOList = replyImpl.getReplyDTOList(id);
-            commentDTO.setReplyDTOList(replyDTOList);
-
-            //二是查询comment的user的部分信息
+            //查询出创建这条评论的用户
             int userId = comment.getUserId();
             User oneUser = userImpl.getOneUser(userId);
-            commentDTO.setNickName(oneUser.getNickName());
-            commentDTO.setAvatar(oneUser.getAvatar());
-            commentDTO.setDepartment(oneUser.getDepartment());
-            commentDTO.setRole(oneUser.getRole());
 
-            list.add(commentDTO);
+            commentDTO.setComment(comment);
+            commentDTO.setUser(oneUser);
+
+            //获取评论列表
+            List<ReplyDTO> replyDTOList = replyImpl.getReplyDTOList(comment.getId());
+            commentDTO.setReplyDTOList(replyDTOList);
+
+            
+            res.add(commentDTO);
 
         }
-        res.setRecords(list);
+
+
         return res;
 
 

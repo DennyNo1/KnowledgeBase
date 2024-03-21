@@ -1,6 +1,7 @@
 package com.chinatelecom.knowledgebase.DTO;
 
 import com.chinatelecom.knowledgebase.entity.Comment;
+import com.chinatelecom.knowledgebase.entity.User;
 import lombok.Data;
 
 import java.util.List;
@@ -15,11 +16,8 @@ import java.util.List;
 public class CommentDTO
 {
     private Comment comment;
-    //用户的信息
-    private String nickName;
-    private String department;
-    private String avatar;
-    private String role;
+    //创建该评论的用户的信息
+    private User user;
     //是否被已登录的用户点赞
     private boolean isLiked=false;
     //comment下的reply
