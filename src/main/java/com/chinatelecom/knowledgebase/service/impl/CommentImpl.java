@@ -111,7 +111,7 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
             List<ReplyDTO> replyDTOList = replyImpl.getReplyDTOList(comment.getId());
             commentDTO.setReplyDTOList(replyDTOList);
 
-            
+
             res.add(commentDTO);
 
         }

@@ -1,6 +1,7 @@
 package com.chinatelecom.knowledgebase.DTO;
 
 import com.chinatelecom.knowledgebase.entity.Reply;
+import com.chinatelecom.knowledgebase.entity.User;
 import lombok.Data;
 
 /**
@@ -14,8 +15,5 @@ public class ReplyDTO
 {
     private Reply reply;
     //用户的信息
-    private String nickName;
-    private String department;
-    private String avatar;
-    private String role;
+    private User user;
 }

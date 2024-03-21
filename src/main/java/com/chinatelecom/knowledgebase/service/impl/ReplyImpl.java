@@ -42,10 +42,7 @@ public class ReplyImpl extends ServiceImpl<ReplyMapper, Reply> implements ReplyS
             User oneUser = userImpl.getOneUser(userId);
             ReplyDTO replyDTO=new ReplyDTO();
             replyDTO.setReply(reply);
-            replyDTO.setAvatar(oneUser.getAvatar());
-            replyDTO.setDepartment(oneUser.getDepartment());
-            replyDTO.setNickName(oneUser.getNickName());
-            replyDTO.setRole(oneUser.getRole());
+            replyDTO.setUser(oneUser);
             res.add(replyDTO);
         }
         return res;
