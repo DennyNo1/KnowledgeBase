@@ -70,10 +70,12 @@ public class QuestionController
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
-            @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked
+            @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked,
+            @RequestParam(name="type",required = false) String type
+
     ){
 
-        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked);
+        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type);
         return R.success(questions,"成功传输question分页数据");
 
     }

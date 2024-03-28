@@ -19,7 +19,7 @@ public class CommentDTO
     //创建该评论的用户的信息
     private User user;
     //是否被已登录的用户点赞
-    private boolean isLiked=false;
+    private boolean isLiked;
     //comment下的reply
     private List<ReplyDTO> replyDTOList;
 

@@ -24,4 +24,5 @@ public class Question {
     private String videoUrls;
     private Integer isSolved;
     private Integer isChecked;
+    private String type;
 }

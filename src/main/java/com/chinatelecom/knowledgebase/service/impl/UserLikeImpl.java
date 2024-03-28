@@ -50,4 +50,15 @@ public class UserLikeImpl extends ServiceImpl<UserLikeMapper, UserLike> implemen
         return R.success(null,"点赞成功");
 
     }
+    public boolean isLikeOrNot(String belongType,int belongId,int userId){
+        QueryWrapper<UserLike> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("belong_type",belongType);
+        queryWrapper.eq("belong_id",belongId);
+        queryWrapper.eq("user_id",userId);
+        UserLike one = this.getOne(queryWrapper);
+        if(one==null)
+            return false;
+        else return true;
+
+    }
 }

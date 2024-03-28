@@ -33,13 +33,18 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     @Autowired
     CommentImpl commentImpl;
     //mybatisplus竟然不支持连表查询
-    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked){
+    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type){
         Page<Question> questionPage=new Page<>(page,pageSize);
         QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("is_checked",isChecked);
         if(queryName!=null){
             queryWrapper.like("title",queryName);
         }
+        if(type!=null)
+        {
+            queryWrapper.eq("type",type);
+        }
+
 
         //查询。把查询结果放到page中。
         this.page(questionPage,queryWrapper);
@@ -73,12 +78,12 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         User oneUser = userImpl.getOneUser(questionerId);
         QuestionDTO questionDTO = new QuestionDTO();
         questionDTO.setQuestion(question);
-        questionDTO.setNickName(oneUser.getNickName());
-        questionDTO.setDepartment(oneUser.getDepartment());
-        questionDTO.setRole(oneUser.getRole());
-        questionDTO.setAvatar(oneUser.getAvatar());
+        questionDTO.setUser(oneUser);
         return questionDTO;
     }
+
+
+
     /*//查询一个问题的数据
     public List getOneQuestion(int questionId,int loginUserId){
         //问题+回答+评论的列表

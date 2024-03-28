@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Comment;
+import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,10 +28,19 @@ public class CommentController
     @GetMapping()
     public R<List<CommentDTO>> getCommentList(
             @RequestParam(name = "belongType",required = true) String belongType,//评论所属的内容
-            @RequestParam(name = "belongId",required = true) int belongId//评论所属内容的id
+            @RequestParam(name = "belongId",required = true) int belongId,//评论所属内容的id
+            @RequestParam(name = "userId",required = false) String userId//因为有可能是空值。传过来的string”“,没法转换成int的某个值。所以直接用string对接string。
 
     ){
-        List<CommentDTO> commentDTOList = commentImpl.getCommentList(belongType, belongId);
+        int loginUserId;
+        if(userId.equals(""))
+        {
+            loginUserId=0;
+        }
+        else {
+            loginUserId=Integer.valueOf(userId);
+        }
+        List<CommentDTO> commentDTOList = commentImpl.getCommentList(belongType, belongId,loginUserId);
         return R.success(commentDTOList,"成功传输评论区");
 
     }
@@ -48,6 +58,7 @@ public class CommentController
             throw new RuntimeException("添加评论失败，可能是由于数据库操作异常");
         }
     }
+
 
 
 }

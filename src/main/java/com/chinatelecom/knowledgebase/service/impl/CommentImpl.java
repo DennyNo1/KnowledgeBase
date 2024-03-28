@@ -70,6 +70,7 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
         }
         return res;
     }*/
+    //点赞。这里吧全种类的点赞，放在了评论的服务实现这里。
     public boolean userLike(String type,int loginUserId,int typeId)
     {
         QueryWrapper<UserLike> likeQueryWrapper=new QueryWrapper<>();
@@ -80,10 +81,11 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
         if(one==null){
             return false;
         }
+
         return true;
 
     }
-    public List<CommentDTO> getCommentList(String belongType, int belongId){
+    public List<CommentDTO> getCommentList(String belongType, int belongId,int loginUserId){
 
         List<CommentDTO> res=new ArrayList<>();
 
@@ -112,6 +114,16 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
             commentDTO.setReplyDTOList(replyDTOList);
 
 
+            //去获取该用户是否点赞该评论
+            if(loginUserId!=0)
+            {
+                boolean likeRes = userLikeImpl.isLikeOrNot("comment", comment.getId(), loginUserId);
+                commentDTO.setLiked(likeRes);
+
+            }
+            else commentDTO.setLiked(false);
+
+
             res.add(commentDTO);
 
         }
@@ -121,6 +133,26 @@ public class CommentImpl extends ServiceImpl<CommentMapper, Comment> implements 
 
 
 
+
+
+    }
+    //给某一个评论的点赞数+1。只负责处理comment表的数据。
+    public boolean likeComment(Integer commentId){
+        //给comment表的likeCount+1
+
+        //通过id查出该记录
+        try {
+            //我感觉只会在这一步出现异常
+            Comment byId = this.getById(commentId);
+            int likeCount = byId.getLikeCount();
+            byId.setLikeCount(likeCount+1);
+
+            this.saveOrUpdate(byId);
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException("无法查询到该评论记录"+e);
+        }
 
 
     }
