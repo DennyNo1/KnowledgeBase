@@ -26,4 +26,7 @@ public class ImageImpl extends ServiceImpl<ImageMapper, Image> implements ImageS
         return list;
 
     }
+//    public boolean saveImage(){
+//
+//    }
 }

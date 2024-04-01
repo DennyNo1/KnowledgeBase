@@ -43,8 +43,14 @@ upload:
   video:
 #    开发环境路径
     directory: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\video\\
+
 #    生产环境路径
 #     directory: /home/video
+
+
+  image:
+    directory: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\image\\
+
 
 
 

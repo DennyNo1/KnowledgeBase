@@ -15,5 +15,7 @@ public class Image {
     @TableId(type = IdType.AUTO)
     private Integer id;
     private Integer articleId;
-    private String imageUrl;
+    private String url;
+    private String alt;// 图片描述文字，非必须
+    private String href;// 图片的链接，非必须
 }
