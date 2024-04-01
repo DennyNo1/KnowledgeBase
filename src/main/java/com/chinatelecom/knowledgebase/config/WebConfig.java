@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${upload.video.directory}")
     private String videoUploadDirectory;
 
-
+//这个配置文件说来完全没有必要，只是把对http://localhost:8088/videos/**的所有类型的请求转换到videoUploadDirectory
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 使用Environment变量或application.properties中的属性来获取实际路径

@@ -43,9 +43,10 @@ public class ArticleController {
     public R<Page<ArticleListDTO>> getArticleList(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
-            @RequestParam(name="queryName",required = false) String queryName
+            @RequestParam(name="queryName",required = false) String queryName,
+            @RequestParam(name="type",required = false) String type
     ){
-        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName);
+        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName,type);
         //理论上不会有失败的数据
         return R.success(articleList,"成功传输article分页数据");
 

@@ -30,13 +30,16 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
     @Autowired
     AttachmentImpl attachmentImpl;
 
-    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName)
+    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName,String type)
     {
 
         Page<Article> articlePage = new Page<>(page, pageSize);
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
         if(queryName!=null){
             articleQueryWrapper.like("title",queryName);
+        }
+        if(type!=null){
+            articleQueryWrapper.eq("type",type);
         }
         //根据页的条件，查询出article对象的page
         this.page(articlePage,articleQueryWrapper);
@@ -64,11 +67,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
         int uploaderId = article.getUploaderId();
         User user = userImpl.getOneUser(uploaderId);
         articleListDTO.setArticle(article);
-
-        articleListDTO.setDepartment(user.getDepartment());
-        articleListDTO.setNickName(user.getNickName());
-        articleListDTO.setRole(user.getRole());
-        articleListDTO.setAvatar(user.getAvatar());
+       articleListDTO.setUser(user);
         return articleListDTO;
     }
 

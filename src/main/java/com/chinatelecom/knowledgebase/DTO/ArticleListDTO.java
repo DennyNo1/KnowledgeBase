@@ -1,6 +1,7 @@
 package com.chinatelecom.knowledgebase.DTO;
 
 import com.chinatelecom.knowledgebase.entity.Article;
+import com.chinatelecom.knowledgebase.entity.User;
 import lombok.Data;
 
 /**
@@ -13,8 +14,5 @@ import lombok.Data;
 public class ArticleListDTO
 {
     private Article article;
-    private String nickName;
-    private String department;
-    private String avatar;
-    private String role;
+    private User user;
 }
