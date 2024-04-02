@@ -88,7 +88,7 @@ public class VideoController {
     }
 
     //将前端传过来的视频文件，保存到指定文件夹
-    @Value("${upload.video.directory}")
+    @Value("${upload.video.path}")
     private String videoUploadDirectory;
 
     @PostMapping("/upload")

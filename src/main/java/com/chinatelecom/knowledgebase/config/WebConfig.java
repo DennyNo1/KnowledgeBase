@@ -17,19 +17,24 @@ public class WebConfig implements WebMvcConfigurer {
 
 
     //开发环境下视频存放的地址
-    @Value("${upload.video.directory}")
-    private String videoUploadDirectory;
-    @Value("${upload.image.directory}")
-    private String imageUploadDirectory;
+    @Value("${upload.video.path}")
+    private String videoUploadPath;
+    @Value("${upload.image.path}")
+    private String imageUploadPath;
+    @Value("${upload.attachment.path}")
+    private String attachmentUploadPath;
 
 //这个配置文件说来完全没有必要，只是把对http://localhost:8088/videos/**的所有类型的请求转换到videoUploadDirectory
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 使用Environment变量或application.properties中的属性来获取实际路径
         registry.addResourceHandler("/videos/**")
-                .addResourceLocations("file:" + videoUploadDirectory);
+                .addResourceLocations("file:" + videoUploadPath);
 
         registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:" + imageUploadDirectory);
+                .addResourceLocations("file:" + imageUploadPath);
+
+        registry.addResourceHandler("/attachments/**")
+                .addResourceLocations("file:" + attachmentUploadPath);
     }
 }

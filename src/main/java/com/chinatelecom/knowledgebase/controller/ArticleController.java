@@ -1,11 +1,13 @@
 package com.chinatelecom.knowledgebase.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.chinatelecom.knowledgebase.DTO.*;
+import com.chinatelecom.knowledgebase.DTO.ArticleDTO;
+import com.chinatelecom.knowledgebase.DTO.ArticleListDTO;
 import com.chinatelecom.knowledgebase.common.R;
-import com.chinatelecom.knowledgebase.common.RofImg;
 import com.chinatelecom.knowledgebase.entity.Article;
+import com.chinatelecom.knowledgebase.entity.Attachment;
 import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
+import com.chinatelecom.knowledgebase.service.impl.AttachmentImpl;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.UserImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,16 +15,19 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.chinatelecom.knowledgebase.util.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static com.chinatelecom.knowledgebase.util.FileNameUtils.generateUniqueFileName;
 
 /**
  * @Author Denny
@@ -74,11 +79,12 @@ public class ArticleController {
     @PostMapping("/add")
     public R addArticle(@RequestBody Article article)
     {
-        if(article.getContent()==null||article.getTitle()==null)
-            return R.error("上传失败，请输入文章的标题、内容");
+        if(article.getType()==null||article.getTitle()==null)
+            return R.error("上传失败，请输入文章的标题、类型");
         boolean saveRes = articleImpl.save(article);
         if (saveRes) {
-            return R.success(null, "上传成功");
+            Integer id = article.getId();
+            return R.success(id, "上传成功");
         } else {
             throw new RuntimeException("上传失败，可能是由于数据库操作异常");
         }
@@ -90,71 +96,52 @@ public class ArticleController {
 
 
 
-    @Value("${upload.image.directory}")
-    private String uploadPath;//图片上传的存放路径，目前暂存在项目的windows路径下
+    @Value("${upload.image.path}")
+    private String imageUploadPath;//图片上传的存放路径，目前暂存在项目的windows路径下
     private static final int UPLOAD_SUCCESS_ERRNO = 0;
     private static final int UPLOAD_FAILURE_ERRNO = 1;
 
-    private static final String VIDEO_DIRECTORY="http://localhost:8088/images/";
+    private  String imageAccessPath="http://localhost:8088/images/";
 
     //假设每次只传一张图片
     @PostMapping("/upload-image")
     public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("image") MultipartFile file) {
-        if (file.isEmpty()) {
-            Map<String, Object> errorResponseData = new HashMap<>();
-            errorResponseData.put("errno", UPLOAD_FAILURE_ERRNO);
-            errorResponseData.put("message", "文件为空，上传失败");
-            return ResponseEntity.badRequest().body(errorResponseData);
-        }
-
-        // 生成唯一文件名（可结合当前时间防止重名）
-        String uniqueFileName = generateUniqueFileName(file.getOriginalFilename());
-        String filePath = uploadPath + File.separator + uniqueFileName;
-
-        try {
-            // 保证上传目录存在
-            Files.createDirectories(Paths.get(uploadPath));
-
-            // 将文件保存到指定位置
-            Path targetLocation = Paths.get(filePath);
-            Files.copy(file.getInputStream(), targetLocation);
-
-            // 构建响应数据
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("errno", UPLOAD_SUCCESS_ERRNO);
-            Map<String,String> data=new HashMap<>();
-            data.put("url",VIDEO_DIRECTORY+uniqueFileName);
-            data.put("alt",uniqueFileName);
-            data.put("href",VIDEO_DIRECTORY+uniqueFileName);
-            responseData.put("data",data);
-            return ResponseEntity.ok(responseData);
-
-        } catch (IOException e) {
-            Map<String, Object> errorResponseData = new HashMap<>();
-            errorResponseData.put("errno", UPLOAD_FAILURE_ERRNO);
-            errorResponseData.put("message", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponseData);
-        }
+        Map<String, Object> upload = UploadFileUtils.upload(file, UPLOAD_FAILURE_ERRNO, UPLOAD_SUCCESS_ERRNO, imageUploadPath, imageAccessPath);
+        if(upload.get("errno").equals(UPLOAD_FAILURE_ERRNO)) return ResponseEntity.badRequest().body(upload);
+        else return ResponseEntity.ok(upload);
     }
 
-    private String generateUniqueFileName(String originalFileName) {
-        // 使用SimpleDateFormat获取当前时间作为文件名的一部分，防止重名
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_SSS");
-        String timestamp = formatter.format(new Date());
 
-        // 拼接原文件名与时间戳，可能需要处理特殊字符或非法文件名
-        String extension = getExtension(originalFileName); // 获取文件扩展名
-        return timestamp + "_" + originalFileName.replaceFirst("\\." + extension + "$", "") + "." + extension;
-    }
+    @Value("${upload.attachment.path}")
+    private String attachmentUploadPath;
+    private  String attachmentAccessPath="http://localhost:8088/attachments/";
 
-    //获取文件扩展名。就是.后面的类型名。
-    private String getExtension(String fileName) {
-        int lastDotIndex = fileName.lastIndexOf(".");
-        if (lastDotIndex == -1) {
-            return ""; // 没有扩展名
+    //多个附件上传的接口
+    @PostMapping("/upload-attachment")
+    public ResponseEntity<List<Map<String, Object>>> uploadAttachment(@RequestParam("file") List<MultipartFile> files) {
+        List<Map<String, Object>> allResponses = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            Map<String, Object> upload = UploadFileUtils.upload(file, UPLOAD_FAILURE_ERRNO, UPLOAD_SUCCESS_ERRNO,attachmentUploadPath, attachmentAccessPath);
+            allResponses.add(upload);
         }
-        return fileName.substring(lastDotIndex + 1);
+
+        // 返回包含所有文件上传结果的响应
+        return ResponseEntity.ok(allResponses);
+
     }
+
+    @Autowired
+    AttachmentImpl attachmentImpl;
+    @PostMapping("/save_attachment")
+    public R saveAttachment(@RequestBody Attachment attachment){
+
+        boolean save = attachmentImpl.save(attachment);
+        if(save)
+            return R.success(null,"上传附件成功");
+        else return R.error("上传附件失败");
+    }
+
 
 
 }
