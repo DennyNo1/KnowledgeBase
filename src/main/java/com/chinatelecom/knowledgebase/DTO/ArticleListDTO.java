@@ -15,4 +15,5 @@ public class ArticleListDTO
 {
     private Article article;
     private User user;
+
 }

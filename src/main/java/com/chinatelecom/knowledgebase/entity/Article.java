@@ -27,5 +27,6 @@ public class Article {
     private int commentCount;
     private String label;
     private Integer likeCount;
+    private String tag;
 
 }

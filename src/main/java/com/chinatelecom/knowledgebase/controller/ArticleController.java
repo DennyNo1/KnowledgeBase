@@ -6,10 +6,8 @@ import com.chinatelecom.knowledgebase.DTO.ArticleListDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Article;
 import com.chinatelecom.knowledgebase.entity.Attachment;
-import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
-import com.chinatelecom.knowledgebase.service.impl.AttachmentImpl;
-import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
-import com.chinatelecom.knowledgebase.service.impl.UserImpl;
+import com.chinatelecom.knowledgebase.entity.UserLike;
+import com.chinatelecom.knowledgebase.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -61,15 +59,31 @@ public class ArticleController {
 
     }
 
+@Autowired
+UserLikeImpl userLikeImpl;
 
-    //
+
     @GetMapping()
     public R<ArticleDTO> getArticle(
-            @RequestParam(name = "articleId",required = true) int articleId
+            @RequestParam(name = "articleId",required = true) int articleId,
+            @RequestParam(name = "userId",required = false) String userId//因为有可能是空值。传过来的string”“,没法转换成int的某个值。所以直接用string对接string。
 
     ){
         //查询到一篇文章的记录
         ArticleDTO articleDTO = articleImpl.getArticleDTO(articleId);
+
+
+        if(!userId.equals(""))
+        {
+            int loginUserId=Integer.valueOf(userId);
+                boolean likeRes = userLikeImpl.isLikeOrNot("article", articleDTO.getArticleListDTO().getArticle().getId(), loginUserId);
+            articleDTO.setLiked(likeRes);
+
+
+
+        }
+        else articleDTO.setLiked(false);
+
 
 
         return R.success(articleDTO,"成功传输课件");
@@ -141,6 +155,8 @@ public class ArticleController {
             return R.success(null,"上传附件成功");
         else return R.error("上传附件失败");
     }
+
+
 
 
 

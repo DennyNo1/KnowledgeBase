@@ -23,7 +23,7 @@ public class Video
     private int uploaderId;
     private LocalDateTime date;
 
-    private String clickCount;
+    private Integer clickCount;
     private String title;
     private String url;
 }

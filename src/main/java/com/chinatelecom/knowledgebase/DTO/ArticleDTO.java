@@ -14,9 +14,12 @@ import java.util.List;
  * @Version 1.0
  */
 @Data
+//单篇文章的详情页的类
 public class ArticleDTO {
     private ArticleListDTO articleListDTO;
-    //简单的话其实只用imageUrl。但为了后续的扩展，还是设置为对象。
-    private List<Image> imageList;
+
     private List<Attachment> attachmentList;
+
+    //是否被已登录用户点赞
+    private boolean isLiked;
 }

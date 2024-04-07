@@ -11,6 +11,7 @@ import com.chinatelecom.knowledgebase.service.ArticleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,19 +76,44 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
     {
 
         Article article = this.getById(articleId);
+
+        //增加浏览量
+        article.setClickCount(article.getClickCount()+1);
+        this.updateById(article);
+
         ArticleListDTO articleListDTO = this.getArticleListDTO(article);
 
         ArticleDTO articleDTO=new ArticleDTO();
         articleDTO.setArticleListDTO(articleListDTO);
 
-        List<Image> imageList = imageImpl.getImageList(articleId);
+
         List<Attachment> attachmentList = attachmentImpl.getAttachmentList(articleId);
-        articleDTO.setImageList(imageList);
+
         articleDTO.setAttachmentList(attachmentList);
 
         return articleDTO;
 
 
     }
+    public boolean likeArticle(Integer articleId){
+        //给article表的likeCount+1
+
+        //通过id查出该记录
+        try {
+            //我感觉只会在这一步出现异常
+            Article byId = this.getById(articleId);
+            int likeCount = byId.getLikeCount();
+            byId.setLikeCount(likeCount+1);
+
+            this.saveOrUpdate(byId);
+            return true;
+
+        } catch (Exception e) {
+            throw new RuntimeException("无法查询到该文章记录"+e);
+        }
+
+
+    }
+
 
 }

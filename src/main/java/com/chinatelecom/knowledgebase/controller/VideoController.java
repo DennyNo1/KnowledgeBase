@@ -66,6 +66,10 @@ public class VideoController {
         QueryWrapper<Video> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("id",id);
         Video one = videoImpl.getOne(queryWrapper);
+        //每获取单个视频一次，增加一次浏览量
+        one.setClickCount(one.getClickCount()+1);
+        videoImpl.updateById(one);
+
         VideoDTO oneVideoDTO = videoImpl.getOneVideoDTO(one);
         return  R.success(oneVideoDTO,"成功传输视频");
 

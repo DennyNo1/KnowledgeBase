@@ -2,6 +2,7 @@ package com.chinatelecom.knowledgebase.controller;
 
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.UserLike;
+import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.UserLikeImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class UserLikeController {
     UserLikeImpl userLikeImpl;
     @Autowired
     CommentImpl commentImpl;
+    @Autowired
+    ArticleImpl articleImpl;
     @PostMapping
     public R updateLike(@RequestBody UserLike userLike)
     {
@@ -32,6 +35,10 @@ public class UserLikeController {
         //先只做评论的点赞.先给comment表的记录的likeCount+1.
         if(userLike.getBelongType().equals("comment")) {
             commentImpl.likeComment(userLike.getBelongId());
+        }
+        if(userLike.getBelongType().equals("article"))
+        {
+            articleImpl.likeArticle(userLike.getBelongId());
         }
         //因为每个用户只限制点赞一次，所以是save
         boolean save = userLikeImpl.save(userLike);
