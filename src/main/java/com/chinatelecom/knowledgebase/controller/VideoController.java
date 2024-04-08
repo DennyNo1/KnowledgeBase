@@ -46,6 +46,7 @@ public class VideoController {
             @RequestParam(name="queryName",required = false) String queryName,
             @RequestParam(name="type",required = false) String type
     ){
+        if(type.equals("默认")) type=null;
         Page<VideoDTO> videos = videoImpl.getVideos(page, pageSize, queryName,type);
         //理论上不会有失败的数据
 
