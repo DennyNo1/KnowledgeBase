@@ -42,7 +42,11 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         }
         if(type!=null)
         {
-            queryWrapper.eq("type",type);
+            if(type.equals("热门知识"))
+            {
+                queryWrapper.orderByDesc("click_count");
+            }
+            else queryWrapper.eq("type",type);
         }
 
 
@@ -68,6 +72,10 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     public QuestionDTO getQuestionDTO(int questionId)
     {
         Question byId = this.getById(questionId);
+        //每次访问更新点击量
+        byId.setClickCount(byId.getClickCount()+1);
+        this.updateById(byId);
+
        return this.getPartOfUser(byId);
 
 

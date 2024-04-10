@@ -74,6 +74,7 @@ public class QuestionController
             @RequestParam(name="type",required = false) String type
 
     ){
+        if(type.equals("默认")) type=null;
 
         Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type);
         return R.success(questions,"成功传输question分页数据");

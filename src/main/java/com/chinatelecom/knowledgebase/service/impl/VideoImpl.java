@@ -36,8 +36,14 @@ public class VideoImpl extends ServiceImpl<VideoMapper, Video> implements VideoS
             videoQueryWrapper.like("title",queryName);
         }
         if(type!=null){
-            videoQueryWrapper.eq("type",type);
+            //如果是type=默认，在传递到这个方法前已被设为null
+            if(type.equals("热门知识"))
+            {
+                videoQueryWrapper.orderByDesc("click_count");
+            }
+            else videoQueryWrapper.eq("type",type);
         }
+
         this.page(videoPage,videoQueryWrapper);//这个应该就是查询了，并把结果放在videoPage
         //还需要把Page里的List<Video>替换成List<VideoDto>
 

@@ -40,7 +40,15 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
             articleQueryWrapper.like("title",queryName);
         }
         if(type!=null){
-            articleQueryWrapper.eq("type",type);
+            if(type.equals("热门知识"))
+            {
+                articleQueryWrapper.orderByDesc("click_count");
+            }
+            //除去热门知识和默认这两个类别，文章是按照置顶度排序
+            else {
+                articleQueryWrapper.eq("type",type);
+                articleQueryWrapper.orderByDesc("top");
+            }
         }
         //根据页的条件，查询出article对象的page
         this.page(articlePage,articleQueryWrapper);

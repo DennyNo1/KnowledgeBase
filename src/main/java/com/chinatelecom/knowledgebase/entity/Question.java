@@ -20,9 +20,10 @@ public class Question {
     private LocalDateTime date;
     private String title;
     private String content;
-    private String imageUrls;
-    private String videoUrls;
+//    private String imageUrls;
+//    private String videoUrls;
     private Integer isSolved;
     private Integer isChecked;
     private String type;
+    private int clickCount;
 }

@@ -159,6 +159,15 @@ UserLikeImpl userLikeImpl;
         else return R.error("上传附件失败");
     }
 
+//    修改置顶度
+@PostMapping("/top")
+   public R modifyTop(@RequestBody Article article){
+        //会报错的点，只能是查不到该article对象
+    Article byId = articleImpl.getById(article.getId());
+    byId.setTop(article.getTop());
+    articleImpl.updateById(byId);
+    return R.success(null,"修改置顶度成功");
+}
 
 
 

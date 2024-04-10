@@ -28,5 +28,6 @@ public class Article {
     private String label;
     private Integer likeCount;
     private String tag;
+    private int top;
 
 }
