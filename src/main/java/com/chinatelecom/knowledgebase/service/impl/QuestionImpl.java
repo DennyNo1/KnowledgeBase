@@ -8,6 +8,7 @@ import com.chinatelecom.knowledgebase.entity.*;
 import com.chinatelecom.knowledgebase.mapper.QuestionMapper;
 import com.chinatelecom.knowledgebase.service.QuestionService;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     @Autowired
     CommentImpl commentImpl;
     //mybatisplus竟然不支持连表查询
-    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type){
+    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type,String assignTo){
         Page<Question> questionPage=new Page<>(page,pageSize);
         QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("is_checked",isChecked);
@@ -47,6 +48,16 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
                 queryWrapper.orderByDesc("click_count");
             }
             else queryWrapper.eq("type",type);
+        }
+        if(assignTo!=null)
+        {
+            if(!assignTo.equals("admin"))
+            {
+                queryWrapper.eq("assign_to",assignTo);
+
+            }
+            //查未被解决的问题
+            queryWrapper.eq("is_solved",0);
         }
 
 
@@ -88,6 +99,42 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         questionDTO.setQuestion(question);
         questionDTO.setUser(oneUser);
         return questionDTO;
+    }
+
+    //查询未回复的问题的数量
+    public Integer getNumOfQuestionWithoutComment(String role){
+        QueryWrapper<Question> queryWrapper=new QueryWrapper();
+        int count=0;
+        //假设role是正确的
+        if(!role.equals("admin"))
+        {
+            queryWrapper.eq("assigned_to",role);
+
+
+
+        }
+        //所有通过审核的问题，都是慧问待回答的问题
+        else {
+            queryWrapper.eq("is_checked",1);
+
+
+        }
+        //这个管理员需要回复的问题列表
+        List<Question> list = this.list(queryWrapper);
+        count=list.size();
+        for (Question question: list
+        ) {
+            Integer id = question.getId();
+            //判断这个问题的回复是否存在
+            QueryWrapper<Comment> commentQueryWrapper=new QueryWrapper<>();
+            commentQueryWrapper.eq("belong_type",question);
+            commentQueryWrapper.eq("belong_id",id);
+            Comment one = commentImpl.getOne(commentQueryWrapper);
+            if(one!=null) count--;
+
+
+        }
+        return count;
     }
 
 

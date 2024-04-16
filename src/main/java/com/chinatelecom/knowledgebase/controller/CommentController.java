@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.CommentDTO;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.Comment;
+import com.chinatelecom.knowledgebase.entity.Question;
 import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
+import com.chinatelecom.knowledgebase.service.impl.QuestionImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,8 @@ public class CommentController
 {
     @Autowired
     CommentImpl commentImpl;
+    @Autowired
+    QuestionImpl questionImpl;
 
     //参考了下b站的评论区，可以把所有评论放在一页里。所以没必要像贴吧那样复杂化分页。
     @GetMapping()
@@ -53,6 +57,14 @@ public class CommentController
             return R.error("评论失败，请输入评论的内容");
         boolean saveRes = commentImpl.save(comment);
         if (saveRes) {
+            //如果是对问题进行评论，再多加一个步骤,让该问题的记录表明被回复
+            if(comment.getBelongType().equals("question"))
+            {
+                //这一个步骤，只是更新一个值，只有数据库错误的可能
+                Question byId = questionImpl.getById(comment.getBelongId());
+                byId.setIsSolved(1);
+                questionImpl.updateById(byId);
+            }
             return R.success(null, "添加评论成功");
         } else {
             throw new RuntimeException("添加评论失败，可能是由于数据库操作异常");

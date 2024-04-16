@@ -1,5 +1,6 @@
 package com.chinatelecom.knowledgebase.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.QuestionDTO;
 import com.chinatelecom.knowledgebase.common.R;
@@ -71,27 +72,32 @@ public class QuestionController
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
             @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked,
-            @RequestParam(name="type",required = false) String type
+            @RequestParam(name="type",required = false) String type,
+            @RequestParam(name="assignTo",required = false) String assignTo
 
     ){
         if(type.equals("默认")) type=null;
 
-        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type);
+        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type,assignTo);
         return R.success(questions,"成功传输question分页数据");
 
     }
+    //处理问题审核的逻辑
 
     @PostMapping("/check")
-    public R check(@RequestBody Map<String,Integer> data){
+    public R check(@RequestBody Map<String,Object> data){
 
-        Integer questionId = data.get("questionId");
-        Integer isChecked = data.get("isChecked");
+        Integer questionId = (Integer) data.get("questionId");
+        Integer isChecked = (Integer) data.get("isChecked");
+        //分配给谁是必须存在的
+        String assignedTo= (String) data.get("assignedTo");
         if(isChecked<-1||isChecked>1)
             return R.error("审核结果值有误，请重新设置");
         try {
         //先查再改
         Question newQuestion = questionImpl.getById(questionId);
         newQuestion.setIsChecked(isChecked);
+            newQuestion.setAssignedTo(assignedTo);
 
             questionImpl.updateById(newQuestion);
             return R.success(null,"审核结果更新成功");
@@ -110,6 +116,39 @@ public class QuestionController
         QuestionDTO questionDTO = questionImpl.getQuestionDTO(questionId);
         return R.success(questionDTO,"传输问题相关数据成功");
 
+
+    }
+
+    //这个接口用于返回待审核问题的数量和待回复问题的数量
+    @GetMapping("/number")
+    public R<Integer> getQuestionNumber(@RequestParam(name = "questionType",required = true) String questionType,@RequestParam(name = "role",required = true) String role){
+        //待审核问题数量
+        if(questionType.equals("check")){
+            try{
+                QueryWrapper<Question> questionQueryWrapper=new QueryWrapper<>();
+                questionQueryWrapper.eq("is_checked",0);
+                int count = questionImpl.count(questionQueryWrapper);
+                return R.success(count,"传输待审核问题数量成功");
+            }
+            catch (Exception e)
+            {
+                return R.error("数据库报错");
+            }
+        }
+        if(questionType.equals("comment"))
+        {
+            try{
+                //查询未回复的问题的数量
+                Integer count = questionImpl.getNumOfQuestionWithoutComment(role);
+                return R.success(count,"传输待回复问题数量成功");
+
+            }
+            catch (Exception e)
+            {
+                return R.error("数据库报错");
+            }
+        }
+        return R.error("问题类型有误");
 
     }
 

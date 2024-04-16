@@ -20,10 +20,10 @@ public class Question {
     private LocalDateTime date;
     private String title;
     private String content;
-//    private String imageUrls;
-//    private String videoUrls;
+    //这里指问题是否被回复
     private Integer isSolved;
     private Integer isChecked;
     private String type;
     private int clickCount;
+    private String assignedTo;
 }
