@@ -25,5 +25,5 @@ public class Question {
     private Integer isChecked;
     private String type;
     private int clickCount;
-    private String assignedTo;
+    private String assignTo;
 }

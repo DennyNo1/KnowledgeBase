@@ -58,6 +58,7 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
             }
             //查未被解决的问题
             queryWrapper.eq("is_solved",0);
+
         }
 
 
@@ -108,7 +109,7 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
         //假设role是正确的
         if(!role.equals("admin"))
         {
-            queryWrapper.eq("assigned_to",role);
+            queryWrapper.eq("assign_to",role);
 
 
 

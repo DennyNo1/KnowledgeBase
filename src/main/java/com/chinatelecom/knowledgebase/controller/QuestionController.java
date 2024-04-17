@@ -71,8 +71,8 @@ public class QuestionController
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
-            @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked,
-            @RequestParam(name="type",required = false) String type,
+            @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked,//审核已经填了默认值
+            @RequestParam(name="type",required = false ) String type,
             @RequestParam(name="assignTo",required = false) String assignTo
 
     ){
@@ -82,7 +82,7 @@ public class QuestionController
         return R.success(questions,"成功传输question分页数据");
 
     }
-    //处理问题审核的逻辑
+    //处理问题审核的逻辑。派单
 
     @PostMapping("/check")
     public R check(@RequestBody Map<String,Object> data){
@@ -90,14 +90,14 @@ public class QuestionController
         Integer questionId = (Integer) data.get("questionId");
         Integer isChecked = (Integer) data.get("isChecked");
         //分配给谁是必须存在的
-        String assignedTo= (String) data.get("assignedTo");
+        String assignTo= (String) data.get("assignTo");
         if(isChecked<-1||isChecked>1)
             return R.error("审核结果值有误，请重新设置");
         try {
         //先查再改
         Question newQuestion = questionImpl.getById(questionId);
         newQuestion.setIsChecked(isChecked);
-            newQuestion.setAssignedTo(assignedTo);
+            newQuestion.setAssignTo(assignTo);
 
             questionImpl.updateById(newQuestion);
             return R.success(null,"审核结果更新成功");
