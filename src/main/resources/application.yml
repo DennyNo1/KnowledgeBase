@@ -13,10 +13,9 @@ spring:
       url: jdbc:mysql://localhost:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
 #      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
-#      开发环境
-      password: root
-##      生产环境
-#      password: 123456
+
+##      生产和生产环境
+      password: 123456
 
 
 

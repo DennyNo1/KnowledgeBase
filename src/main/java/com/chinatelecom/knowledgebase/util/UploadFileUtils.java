@@ -20,6 +20,7 @@ import static com.chinatelecom.knowledgebase.util.FileNameUtils.generateUniqueFi
  * @Description
  * @Version 1.0
  */
+//这个方法，被文章的图片、视频、附件的上传共用
 public class UploadFileUtils
 {
     public  static Map<String, Object> upload( MultipartFile file,int UPLOAD_FAILURE_ERRNO,int UPLOAD_SUCCESS_ERRNO,String uploadPath,String accessPath) {
@@ -36,6 +37,7 @@ public class UploadFileUtils
         String filePath = uploadPath + File.separator + uniqueFileName;
 
         try {
+
             // 保证上传目录存在
             Files.createDirectories(Paths.get(uploadPath));
 
@@ -54,7 +56,10 @@ public class UploadFileUtils
             return responseData;
 //            return ResponseEntity.ok(responseData);
 
-        } catch (IOException e) {
+
+        }
+        //视频文件和图片文件报错返回信息是一样的
+        catch (IOException e) {
             Map<String, Object> errorResponseData = new HashMap<>();
             errorResponseData.put("errno", UPLOAD_FAILURE_ERRNO);
             errorResponseData.put("message", e.getMessage());

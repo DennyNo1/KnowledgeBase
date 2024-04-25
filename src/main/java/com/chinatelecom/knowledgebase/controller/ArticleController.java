@@ -64,7 +64,7 @@ public class ArticleController {
 
 @Autowired
 UserLikeImpl userLikeImpl;
-
+//获取谋篇文章详情页
 
     @GetMapping()
     public R<ArticleDTO> getArticle(
@@ -113,20 +113,39 @@ UserLikeImpl userLikeImpl;
 
 
 
+    //这是图片存放在服务器上的真实路径
     @Value("${upload.image.path}")
     private String imageUploadPath;//图片上传的存放路径，目前暂存在项目的windows路径下
+    @Value("${upload.video.path}")
+    private String videoUploadPath;
     private static final int UPLOAD_SUCCESS_ERRNO = 0;
     private static final int UPLOAD_FAILURE_ERRNO = 1;
 
+    //这是图片存放在服务器上的虚拟路径
     private  String imageAccessPath="http://localhost:8088/images/";
+    private String videoAccessPath="http://localhost:8088/videos/";
 
-    //假设每次只传一张图片
+    //实际能接收多个文件，假设每次只传一张图片
     @PostMapping("/upload-image")
     public ResponseEntity<Map<String, Object>> uploadImage(@RequestParam("image") MultipartFile file) {
         Map<String, Object> upload = UploadFileUtils.upload(file, UPLOAD_FAILURE_ERRNO, UPLOAD_SUCCESS_ERRNO, imageUploadPath, imageAccessPath);
         if(upload.get("errno").equals(UPLOAD_FAILURE_ERRNO)) return ResponseEntity.badRequest().body(upload);
         else return ResponseEntity.ok(upload);
     }
+    @PostMapping("/upload-video")
+    public ResponseEntity<Map<String, Object>> uploadVideo(@RequestParam("video") MultipartFile file) {
+        Map<String, Object> upload = UploadFileUtils.upload(file, UPLOAD_FAILURE_ERRNO, UPLOAD_SUCCESS_ERRNO, videoUploadPath, videoAccessPath);
+        if(upload.get("errno").equals(UPLOAD_FAILURE_ERRNO)) return ResponseEntity.badRequest().body(upload);
+        else return ResponseEntity.ok(upload);
+    }
+
+
+
+
+
+
+
+
 
 
     @Value("${upload.attachment.path}")

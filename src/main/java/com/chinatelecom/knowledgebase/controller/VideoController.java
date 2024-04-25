@@ -42,7 +42,7 @@ public class VideoController {
     @GetMapping("/some")
     public R<Page<VideoDTO>> getVideos(
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
-            @RequestParam(name = "pageSize", required = true, defaultValue = "12") int pageSize,
+            @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
             @RequestParam(name="type",required = false) String type
     ){
