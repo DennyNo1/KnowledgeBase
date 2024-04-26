@@ -51,12 +51,14 @@ public class ArticleController {
             @RequestParam(name = "page", required = true, defaultValue = "1") int page,
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
-            @RequestParam(name="type",required = false) String type
+            @RequestParam(name="type",required = false) String type,
+            @RequestParam(name = "uploaderId",required = false) String uploaderId //因为传过来可能是空值，所以用String
+
     ){
         //对默认进行特殊处理
 
         if(type.equals("默认")) type=null;
-        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName,type);
+        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName,type,uploaderId);
         //理论上不会有失败的数据
         return R.success(articleList,"成功传输article分页数据");
 

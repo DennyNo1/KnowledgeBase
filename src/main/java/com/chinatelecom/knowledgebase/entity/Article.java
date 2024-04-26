@@ -16,9 +16,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class Article {
+    //int和integer，优先考虑integer，因为可以存在null
+
     @TableId(type = IdType.AUTO)//让id跟随数据库 ID 自增
     private Integer id;
-    private String type;
+    private String   type;
     private int uploaderId;
     private LocalDateTime date;
     private String content;

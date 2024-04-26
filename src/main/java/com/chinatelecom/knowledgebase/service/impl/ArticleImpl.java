@@ -31,11 +31,14 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
     @Autowired
     AttachmentImpl attachmentImpl;
 
-    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName,String type)
+    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName,String type,String uploaderId)
     {
 
         Page<Article> articlePage = new Page<>(page, pageSize);
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
+        if(uploaderId!=null){
+            articleQueryWrapper.eq("uploader_id",Integer.valueOf(uploaderId));
+        }
         if(queryName!=null){
             articleQueryWrapper.like("title",queryName);
         }
@@ -46,7 +49,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
             }
             //除去热门知识和默认这两个类别，文章是按照置顶度排序
             else {
-                articleQueryWrapper.eq("type",type);
+                articleQueryWrapper.like("type",type).or().like("type","*");
                 articleQueryWrapper.orderByDesc("top");
             }
         }
