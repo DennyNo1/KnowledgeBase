@@ -55,8 +55,10 @@ public class UserLikeImpl extends ServiceImpl<UserLikeMapper, UserLike> implemen
         queryWrapper.eq("belong_type",belongType);
         queryWrapper.eq("belong_id",belongId);
         queryWrapper.eq("user_id",userId);
-        UserLike one = this.getOne(queryWrapper);
-        if(one==null)
+        //可能存在对同一文章单一用户的多条点赞记录这种错误情形
+        int count = this.count(queryWrapper);
+
+        if(count==0)
             return false;
         else return true;
 

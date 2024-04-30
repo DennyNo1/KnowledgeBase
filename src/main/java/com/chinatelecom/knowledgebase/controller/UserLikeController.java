@@ -6,10 +6,7 @@ import com.chinatelecom.knowledgebase.service.impl.ArticleImpl;
 import com.chinatelecom.knowledgebase.service.impl.CommentImpl;
 import com.chinatelecom.knowledgebase.service.impl.UserLikeImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Author Denny
@@ -45,6 +42,14 @@ public class UserLikeController {
         if(!save) return R.error("该点赞记录已存在，或数据库异常");
         else return R.success(null,"点赞成功");
 
-
+    }
+    //给某文章是否被某用户点赞单独做一个接口，以减少浏览量
+    @Autowired
+    UserLikeImpl getUserLikeImpl;
+    @GetMapping("/article")
+    public boolean getArticleLike(  @RequestParam(name = "articleId",required = true) int articleId,
+                                    @RequestParam(name = "userId",required = true) String userId){
+        Integer user=Integer.valueOf(userId);
+        return  userLikeImpl.isLikeOrNot("article",articleId,user);
     }
 }

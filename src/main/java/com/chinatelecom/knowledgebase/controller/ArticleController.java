@@ -1,5 +1,6 @@
 package com.chinatelecom.knowledgebase.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.chinatelecom.knowledgebase.DTO.ArticleDTO;
 import com.chinatelecom.knowledgebase.DTO.ArticleListDTO;
@@ -78,15 +79,13 @@ UserLikeImpl userLikeImpl;
         ArticleDTO articleDTO = articleImpl.getArticleDTO(articleId);
 
 
-        if(!userId.equals(""))
+        if(userId!=null&&!userId.equals(""))//判断userId存在，并且不为空
         {
             int loginUserId=Integer.valueOf(userId);
                 boolean likeRes = userLikeImpl.isLikeOrNot("article", articleDTO.getArticleListDTO().getArticle().getId(), loginUserId);
             articleDTO.setLiked(likeRes);
 
-
-
-        }
+                    }
         else articleDTO.setLiked(false);
 
 
@@ -106,6 +105,16 @@ UserLikeImpl userLikeImpl;
             return R.success(id, "上传成功");
         } else {
             throw new RuntimeException("上传失败，可能是由于数据库操作异常");
+        }
+    }
+    @PostMapping("/update")
+    public R updateArticle(@RequestBody Article article){
+        try{
+            articleImpl.updateById(article);
+            return R.success(null,"更新文章成功");
+        }
+        catch (Exception e){
+            return R.error(e.getMessage());
         }
     }
 
@@ -173,12 +182,28 @@ UserLikeImpl userLikeImpl;
     AttachmentImpl attachmentImpl;
     @PostMapping("/save_attachment")
     public R saveAttachment(@RequestBody Attachment attachment){
-
         boolean save = attachmentImpl.save(attachment);
         if(save)
             return R.success(null,"上传附件成功");
         else return R.error("上传附件失败");
     }
+
+    //删除附件记录
+    @PostMapping("/delete_attachment")
+    public R deleteAttachment(@RequestBody Attachment attachment){
+        try{
+            Integer articleId = attachment.getArticleId();
+            QueryWrapper<Attachment> queryWrapper=new QueryWrapper<>();
+            queryWrapper.eq("article_id",articleId);
+            attachmentImpl.remove(queryWrapper);
+            return R.success(null,"删除该文件的所有附件记录成功");
+        }
+        catch (Exception e){
+            return R.error(e.getMessage());
+        }
+    }
+
+
 
 //    修改置顶度
 @PostMapping("/top")
