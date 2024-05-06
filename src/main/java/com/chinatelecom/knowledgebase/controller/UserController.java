@@ -4,11 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chinatelecom.knowledgebase.common.R;
 import com.chinatelecom.knowledgebase.entity.User;
 import com.chinatelecom.knowledgebase.service.impl.UserImpl;
+import com.chinatelecom.knowledgebase.util.JwtUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author Denny
@@ -27,10 +31,11 @@ public class UserController
     //简单的逻辑还是写在controller里吧
     @PostMapping("/login")
     //@ResponseBody
-    //验证登录。现在我假设，前端会传过来一个用户名和密码。
-    public R<User> login(@RequestBody User user) throws JsonProcessingException {
+    //验证登录。现在我假设，前端传过来的是用户名和密码。
+    public R<Map<String, Object>> login(@RequestBody User user) throws JsonProcessingException {
 
         String username=user.getUsername();
+        String password = user.getPassword();
         //wrapper是一个条件构造器。现在可以理解成where语句。
         QueryWrapper<User> wrapper=new QueryWrapper<>();
         wrapper.eq("username",username);
@@ -40,11 +45,25 @@ public class UserController
         //log.info(one.getPhone());从数据库查询到的对象存在
         if(one==null)
         {
-            return R.error("不存在该用户");
+
+
+            return R.error("不存在该用户，请联系管理员或重新输入用户名");
         }
-        if(user.getPassword().equals(one.getPassword()))
+        //只有登录成功才需要传送JWT
+        if(password.equals(one.getPassword()))
         {
-            return R.success(one,"登录成功");
+
+            Map<String, Object> claims=new HashMap<>();
+            claims.put("username",username);
+            claims.put("password",password);
+            claims.put("role",one.getRole());//身份
+            String jwt = JwtUtils.generateJwt(claims);
+            //创建一个map，作为返回消息吧
+            Map<String, Object> response=new HashMap();
+            response.put("userInfo",one);
+            response.put("jwt",jwt);
+
+            return R.success(response,"登录成功");
         }
         else return R.error("请输入正确的密码");
         //return one;
