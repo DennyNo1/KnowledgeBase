@@ -44,6 +44,19 @@ public class JwtUtils {
                 .getBody();
         return claims;
     }
+    public static String extractUsername(String jwt){
+        Claims claims = parseJWT(jwt);
+        Object o = claims.get("username");
+        return (String) o;
+
+    }
+    public static String extractRole(String jwt){
+        Claims claims = parseJWT(jwt);
+        Object o = claims.get("role");
+        return (String) o;
+
+    }
+
 }
 
 

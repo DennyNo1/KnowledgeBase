@@ -55,7 +55,9 @@ public class UserController
 
             Map<String, Object> claims=new HashMap<>();
             claims.put("username",username);
-            claims.put("password",password);
+
+            //密码一般不明文传输
+//            claims.put("password",password);
             claims.put("role",one.getRole());//身份
             String jwt = JwtUtils.generateJwt(claims);
             //创建一个map，作为返回消息吧
