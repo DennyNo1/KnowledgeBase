@@ -76,7 +76,7 @@ public class QuestionController
             @RequestParam(name="assignTo",required = false) String assignTo
 
     ){
-        if(type.equals("默认")) type=null;
+
 
         Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type,assignTo);
         return R.success(questions,"成功传输question分页数据");

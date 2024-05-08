@@ -47,6 +47,10 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
             {
                 queryWrapper.orderByDesc("click_count");
             }
+            //问题列表和文章列表，都是按时间降序。但评论和回复，一般是按时间升序。
+            else if(type.equals("默认")){
+                queryWrapper.orderByDesc("date");
+            }
             else queryWrapper.eq("type",type);
         }
         if(assignTo!=null)

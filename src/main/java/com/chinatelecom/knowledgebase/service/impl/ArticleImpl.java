@@ -48,6 +48,9 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
                 articleQueryWrapper.orderByDesc("click_count");
             }
             //除去热门知识和默认这两个类别，文章是按照置顶度排序
+            else if(type.equals("默认")){
+                articleQueryWrapper.orderByDesc("date");
+            }
             else {
                 articleQueryWrapper.like("type",type).or().like("type","*");
                 articleQueryWrapper.orderByDesc("top");
