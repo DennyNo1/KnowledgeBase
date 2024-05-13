@@ -65,7 +65,7 @@ public class CommentController
                 byId.setIsSolved(1);
                 questionImpl.updateById(byId);
             }
-            return R.success(null, "添加评论成功");
+            return R.success(null, "提交成功");
         } else {
             throw new RuntimeException("添加评论失败，可能是由于数据库操作异常");
         }

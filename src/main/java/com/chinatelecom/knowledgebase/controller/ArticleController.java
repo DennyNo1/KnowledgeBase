@@ -111,7 +111,7 @@ UserLikeImpl userLikeImpl;
     public R updateArticle(@RequestBody Article article){
         try{
             articleImpl.updateById(article);
-            return R.success(null,"更新文章成功");
+            return R.success(null,"修改成功");
         }
         catch (Exception e){
             return R.error(e.getMessage());
@@ -214,6 +214,24 @@ UserLikeImpl userLikeImpl;
     articleImpl.updateById(byId);
     return R.success(null,"修改置顶度成功");
 }
+
+//删除文章
+    @DeleteMapping("/delete")
+    public R deleteArticle(@RequestBody Article article){
+        try{
+            boolean b = articleImpl.removeById(article.getId());
+            if(b){
+                return R.success(null,"删除成功");
+            }
+            else return R.error("删除失败");
+
+        }
+        catch (Exception e){
+            //这个应该只有查不到id的意外
+            return R.error("服务器报错");
+        }
+
+    }
 
 
 

@@ -34,13 +34,17 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     @Autowired
     CommentImpl commentImpl;
     //mybatisplus竟然不支持连表查询
-    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type,String assignTo){
+    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type,String assignTo,String isSolved){
         Page<Question> questionPage=new Page<>(page,pageSize);
         QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("is_checked",isChecked);
         if(queryName!=null){
             queryWrapper.like("title",queryName);
         }
+        if(isSolved!=null){
+            queryWrapper.eq("is_solved",isSolved);
+        }
+
         if(type!=null)
         {
             if(type.equals("热门知识"))
@@ -58,12 +62,11 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
             if(!assignTo.equals("admin"))
             {
                 queryWrapper.eq("assign_to",assignTo);
-
             }
-            //查未被解决的问题
-            queryWrapper.eq("is_solved",0);
+
 
         }
+
 
 
         //查询。把查询结果放到page中。
