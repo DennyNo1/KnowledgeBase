@@ -24,4 +24,8 @@ public class User {
     private String location;
     private String department;
     private String avatar;
+    private String saleCode;
+    private String sale;
+    private String safeQuestion;
+    private String safeAnswer;
 }

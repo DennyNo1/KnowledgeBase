@@ -70,15 +70,23 @@ public class UserController
         else return R.error("请输入正确的密码");
         //return one;
     }
-    @PostMapping("/register")
-    public R regiter(@RequestBody User user){
 
-        boolean saveRes = userImpl.save(user);
-        if (saveRes) {
-            return R.success(null, "新用户注册成功");
-        } else {
-            throw new RuntimeException("新用户注册失败，可能是由于数据库操作异常");
+    //查询是否存在该用户，并返回它的安全问题
+    @GetMapping("/check")
+    public R check(@RequestParam(name = "username",required = true) String username){
+        QueryWrapper<User> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("username",username);
+        try{
+            User one = userImpl.getOne(queryWrapper);
+            if(one==null)
+                return R.error("该用户名不存在，请重新输入");
+            else return R.success(one,"成功查询到该用户");
         }
+        catch (Exception e){
+            return R.error(e.getMessage());
+        }
+
+
     }
 
 }
