@@ -103,9 +103,9 @@ public class UserController
         queryWrapper.eq("username",user.getUsername());
         //因为有了上一步check，正常来说是能查询到这个用户
         User one = userImpl.getOne(queryWrapper);
-
+       
         //这个是用于初始化密码
-        if(one.getSafeQuestion()==null)
+        if(one.getSafeQuestion()==null||one.getSafeQuestion().equals(""))
         {
             one.setPassword(user.getPassword());
             one.setSafeQuestion(user.getSafeQuestion());
