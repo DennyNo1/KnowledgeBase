@@ -39,6 +39,6 @@ public class GlobalExceptionHandler
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
         log.error("运行时错误：", ex);
-        return new ResponseEntity<>("服务器内部发生错误，请稍后重试", HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>("服务器内部发生错误，请稍后重试"+ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

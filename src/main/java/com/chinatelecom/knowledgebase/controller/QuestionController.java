@@ -152,6 +152,30 @@ public class QuestionController
         return R.error("问题类型有误");
 
     }
+    //这个方法用于返回是否该用户是否有待回复的问题，待审核的问题
+    //问题是分配给角色的
+    @GetMapping("/wait")
+    public R getHandleQuestion(@RequestParam(name = "role",required = true) String role){
+        QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
+        //如果是管理员，查是否有待审核问题和待回复问题
+        if(role.equals("admin")){
+
+            queryWrapper.or().eq("is_checked",0);
+            queryWrapper.or().eq("is_solved",0);
+        }
+        else{
+            queryWrapper.eq("is_solved",0);
+            queryWrapper.eq("assign_to",role);
+        }
+        int count = questionImpl.count(queryWrapper);
+        //这里只有查询，应该不会报其他的异常
+        if(count>0)
+            return R.success(true,"有待处理需求");
+        else return R.success(false,"无待处理需求");
+
+
+    }
+
 
 
 
