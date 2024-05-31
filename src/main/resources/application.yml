@@ -41,18 +41,19 @@ mybatis-plus:
 upload:
   video:
 #    开发环境路径
-    path: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\video\\
+    path: E:\\upload\\video\\
 
 #    生产环境路径
-#     directory: /home/video
+#     path: /upload/video/
 
 
   image:
-    path: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\image\\
+    path: E:\\upload\\image\\
+    #     path: /upload/image/
 
   attachment:
-    path: E:\\KnowledgeBase\\KnowledgeBase\\src\\uploads\\attachment\\
-
+    path: E:\\upload\\attachment\\
+    #     path: /upload/attachment/
 
 
 
