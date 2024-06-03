@@ -41,19 +41,21 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
         }
         if(queryName!=null){
             articleQueryWrapper.like("title",queryName);
+
         }
         if(type!=null){
-            if(type.equals("热门知识"))
-            {
+            if (type.equals("热门知识")) {
+                // 先按click_count排序，再按date排序
                 articleQueryWrapper.orderByDesc("click_count");
-            }
-            //除去热门知识和默认这两个类别，文章是按照置顶度排序
-            else if(type.equals("默认")){
                 articleQueryWrapper.orderByDesc("date");
-            }
-            else {
-                articleQueryWrapper.like("type",type).or().like("type","*");
+            } else if (type.equals("默认")) {
+                // 仅按date排序
+                articleQueryWrapper.orderByDesc("date");
+            } else {
+                // 先按top排序，再按date排序
+                articleQueryWrapper.like("type", type).or().like("type", "*");
                 articleQueryWrapper.orderByDesc("top");
+                articleQueryWrapper.orderByDesc("date");
             }
         }
         //根据页的条件，查询出article对象的page
@@ -82,6 +84,10 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
         int uploaderId = article.getUploaderId();
         User user = userImpl.getOneUser(uploaderId);
         articleListDTO.setArticle(article);
+
+        //移除安全问题等敏感信息
+        user.setSafeQuestion("");
+        user.setSafeAnswer("");
        articleListDTO.setUser(user);
         return articleListDTO;
     }
