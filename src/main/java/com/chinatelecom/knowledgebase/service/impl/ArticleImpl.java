@@ -52,8 +52,9 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
                 // 仅按date排序
                 articleQueryWrapper.orderByDesc("date");
             } else {
+
                 // 先按top排序，再按date排序
-                articleQueryWrapper.like("type", type).or().like("type", "*");
+                articleQueryWrapper.and(wrapper -> wrapper.like("type", type).or().like("type", "*"));
                 articleQueryWrapper.orderByDesc("top");
                 articleQueryWrapper.orderByDesc("date");
             }
@@ -88,6 +89,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
         //移除安全问题等敏感信息
         user.setSafeQuestion("");
         user.setSafeAnswer("");
+
        articleListDTO.setUser(user);
         return articleListDTO;
     }
