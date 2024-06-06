@@ -110,6 +110,8 @@ UserLikeImpl userLikeImpl;
     @PostMapping("/update")
     public R updateArticle(@RequestBody Article article){
         try{
+        //先不设置更新相关的字段
+
             articleImpl.updateById(article);
             return R.success(null,"修改成功");
         }
