@@ -83,7 +83,7 @@ UserLikeImpl userLikeImpl;
         {
             int loginUserId=Integer.valueOf(userId);
                 boolean likeRes = userLikeImpl.isLikeOrNot("article", articleDTO.getArticleListDTO().getArticle().getId(), loginUserId);
-            articleDTO.setLiked(likeRes);
+                articleDTO.setLiked(likeRes);
 
                     }
         else articleDTO.setLiked(false);

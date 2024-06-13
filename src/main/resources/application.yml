@@ -16,6 +16,10 @@ spring:
 
 ##      生产和生产环境
       password: 123456
+  mvc:
+    static-path-pattern: /static/**
+  resources:
+    static-locations: classpath:/static/
 
 
 
@@ -54,6 +58,9 @@ upload:
   attachment:
     path: E:\\upload\\attachment\\
     #     path: /upload/attachment/
+
+
+
 
 
 

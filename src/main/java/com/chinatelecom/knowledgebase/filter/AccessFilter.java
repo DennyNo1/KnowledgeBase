@@ -34,6 +34,18 @@ public class AccessFilter implements Filter {
 
         final String authorizationHeader = httpRequest.getHeader("Authorization");
 
+//        //对附件下载做额外处理，让附件不直接在浏览器中打开
+//        String requestURI = httpRequest.getRequestURI();
+//
+//        if (requestURI.contains("/attachments/")) { // 这里填写你的文件下载路径
+//            String filename = requestURI.substring(requestURI.lastIndexOf('/') + 1);
+//            httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+//        }
+
+
+
+
+
         String username = null;
         String role=null;
         String jwt = null;
