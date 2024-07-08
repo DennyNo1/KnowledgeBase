@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author Denny
@@ -34,7 +35,7 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
     @Autowired
     CommentImpl commentImpl;
     //mybatisplus竟然不支持连表查询
-    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type,String assignTo,String isSolved){
+    public Page<QuestionDTO> getQuestionList(int page, int pageSize, String queryName, int isChecked,String type,String assignTo,String isSolved,String queryUploader){
         Page<Question> questionPage=new Page<>(page,pageSize);
         QueryWrapper<Question> queryWrapper=new QueryWrapper<>();
         queryWrapper.eq("is_checked",isChecked);
@@ -62,6 +63,22 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
             if(!assignTo.equals("admin"))
             {
                 queryWrapper.eq("assign_to",assignTo);
+            }
+
+
+        }
+        //查询上传者
+        if(queryUploader!=null)
+        {
+            QueryWrapper<User> userQueryWrapper=new QueryWrapper<>();
+            userQueryWrapper.like("nick_name", queryUploader);//可能存在重名
+            List<User> list = userImpl.list(userQueryWrapper);
+            if(list.size()>0)
+            {
+                List<Integer> userIds = list.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList());
+                queryWrapper.in("questioner_id",userIds);
             }
 
 

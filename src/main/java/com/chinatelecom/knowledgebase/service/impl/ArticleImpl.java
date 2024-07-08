@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author Denny
@@ -31,7 +32,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
     @Autowired
     AttachmentImpl attachmentImpl;
 
-    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName,String type,String uploaderId)
+    public Page<ArticleListDTO> getArticleList(int page,int pageSize,String queryName,String type,String uploaderId,String queryUploader)
     {
 
         Page<Article> articlePage = new Page<>(page, pageSize);
@@ -58,6 +59,23 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
                 articleQueryWrapper.orderByDesc("top");
                 articleQueryWrapper.orderByDesc("date");
             }
+        }
+
+        //查询上传者
+        if(queryUploader!=null)
+        {
+            QueryWrapper<User> userQueryWrapper=new QueryWrapper<>();
+            userQueryWrapper.like("nick_name", queryUploader);//可能存在重名
+            List<User> list = userImpl.list(userQueryWrapper);
+            if(list.size()>0)
+            {
+                List<Integer> userIds = list.stream()
+                        .map(User::getId)
+                        .collect(Collectors.toList());
+                articleQueryWrapper.in("uploader_id",userIds);
+            }
+
+
         }
         //根据页的条件，查询出article对象的page
         this.page(articlePage,articleQueryWrapper);

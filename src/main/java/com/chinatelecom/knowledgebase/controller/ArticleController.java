@@ -53,13 +53,14 @@ public class ArticleController {
             @RequestParam(name = "pageSize", required = true, defaultValue = "6") int pageSize,
             @RequestParam(name="queryName",required = false) String queryName,
             @RequestParam(name="type",required = false) String type,
-            @RequestParam(name = "uploaderId",required = false) String uploaderId //因为传过来可能是空值，所以用String
+            @RequestParam(name = "uploaderId",required = false) String uploaderId,//因为传过来可能是空值，所以用String
+            @RequestParam(name="queryUploader",required = false)String queryUploader
 
     ){
         //对默认进行特殊处理
 
 
-        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName,type,uploaderId);
+        Page<ArticleListDTO> articleList = articleImpl.getArticleList(page, pageSize, queryName,type,uploaderId,queryUploader);
         //理论上不会有失败的数据
         return R.success(articleList,"成功传输article分页数据");
 
@@ -67,7 +68,7 @@ public class ArticleController {
 
 @Autowired
 UserLikeImpl userLikeImpl;
-//获取谋篇文章详情页
+//获取单篇文章详情页
 
     @GetMapping()
     public R<ArticleDTO> getArticle(

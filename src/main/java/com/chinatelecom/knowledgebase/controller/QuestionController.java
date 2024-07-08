@@ -74,12 +74,13 @@ public class QuestionController
             @RequestParam(name="isChecked",required = false,defaultValue = "1") int isChecked,//审核已经填了默认值
             @RequestParam(name="type",required = false ) String type,
             @RequestParam(name="assignTo",required = false) String assignTo,
-            @RequestParam(name="isSolved",required = false) String isSolved
+            @RequestParam(name="isSolved",required = false) String isSolved,
+            @RequestParam(name="queryUploader",required = false)String queryUploader
 
     ){
 
 
-        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type,assignTo,isSolved);
+        Page<QuestionDTO> questions = questionImpl.getQuestionList(page, pageSize, queryName,isChecked,type,assignTo,isSolved,queryUploader);
         return R.success(questions,"成功传输question分页数据");
 
     }
