@@ -74,6 +74,11 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
                         .collect(Collectors.toList());
                 articleQueryWrapper.in("uploader_id",userIds);
             }
+            //如果不存在这个用户
+            else {
+                articleQueryWrapper.eq("uploader_id",0);
+            }
+
 
 
         }

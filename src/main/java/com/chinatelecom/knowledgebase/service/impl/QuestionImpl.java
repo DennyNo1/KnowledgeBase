@@ -80,7 +80,10 @@ public class QuestionImpl extends ServiceImpl<QuestionMapper, Question> implemen
                         .collect(Collectors.toList());
                 queryWrapper.in("questioner_id",userIds);
             }
-
+            //如果不存在这个用户
+            else {
+                queryWrapper.eq("uploader_id",0);
+            }
 
         }
 
