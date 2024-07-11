@@ -2,7 +2,10 @@ package com.chinatelecom.knowledgebase.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chinatelecom.knowledgebase.common.R;
+import com.chinatelecom.knowledgebase.entity.DingdingMsgApi;
 import com.chinatelecom.knowledgebase.entity.User;
+import com.chinatelecom.knowledgebase.entity.VerifyObject;
+import com.chinatelecom.knowledgebase.service.impl.DingdingMsgApiImpl;
 import com.chinatelecom.knowledgebase.service.impl.UserImpl;
 import com.chinatelecom.knowledgebase.util.JwtUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -11,8 +14,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author Denny
@@ -94,6 +102,57 @@ public class UserController
 
 
     }
+    @Autowired
+     DingdingMsgApiImpl dingdingMsgApiImpl;
+    //新版重置密码
+    @PostMapping("/resetPwd")
+    public R resetPwd(@RequestBody User user)//只要有手机号即可
+    {
+        System.out.println("resetPwd");
+        try{
+            dingdingMsgApiImpl.insertAndProcess(user.getPhone());
+            return R.success(null,"获取验证码成功");
+        }
+        catch (Exception e)
+        {
+            return R.error(e.getMessage());
+        }
+    }
+
+    //对验证码的验证
+    @PostMapping("/verifyCode")
+    public boolean verifyCode (@RequestBody VerifyObject verifyObject){
+        System.out.println(verifyObject.getCode());
+        QueryWrapper<DingdingMsgApi> queryWrapper=new QueryWrapper<>();
+        queryWrapper.eq("TO_NUMBER",verifyObject.getPhone());
+        queryWrapper.like("MSG","触点");
+        queryWrapper.like("MSG",verifyObject.getCode());
+        List<DingdingMsgApi> list = dingdingMsgApiImpl.list(queryWrapper);
+        if(list.size()!=1) return false;
+        //验证时间是否未半小时内
+        String inputTime = list.get(0).getInputTime();
+        System.out.println(inputTime);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 解析时间字符串为LocalDateTime
+        LocalDateTime targetTime = LocalDateTime.parse(inputTime, formatter);
+
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+
+        // 计算两个时间点的差异
+        Duration duration = Duration.between(now, targetTime);
+
+        // 判断差异是否在30分钟内
+        long diffMinutes = TimeUnit.MILLISECONDS.toMinutes(duration.toMillis());
+        if (Math.abs(diffMinutes) <= 30) {
+            return true;
+        }
+        return false;
+
+    }
+
 
     //重置密码
     @PostMapping("/reset")

@@ -64,6 +64,7 @@ public class AccessFilter implements Filter {
 //        }
         //放行
         filterChain.doFilter(servletRequest,servletResponse);
+        System.out.println("pass");
     }
 
 

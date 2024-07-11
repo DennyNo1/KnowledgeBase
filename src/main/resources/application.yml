@@ -5,18 +5,34 @@ server:
 
 spring:
   #这一部分配置的是Spring Boot应用的数据源（DataSource）相关属性，这里使用的是Druid数据源。
-  datasource:
-    druid:
-      #这一行指定了连接MySQL数据库时使用的JDBC驱动类名。
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      #这一行是数据库连接URL，它包含了连接MySQL数据库所需的所有信息
-      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#  datasource:
+#    druid:
+#      #这一行指定了连接MySQL数据库时使用的JDBC驱动类名。
+#      driver-class-name: com.mysql.cj.jdbc.Driver
+#      #这一行是数据库连接URL，它包含了连接MySQL数据库所需的所有信息
 #      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
-      username: root
+##      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+#      username: root
+#
+###      生产和生产环境
+#      password: 123456
 
-##      生产和生产环境
-      password: 123456
 
+  datasource:
+    dynamic:
+      primary: mysql # 设置默认数据源
+      strict: false
+      datasource:
+        mysql:
+          url: jdbc:mysql://locathost:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          username: root
+          password: 123456
+        oracle:
+          url: jdbc:oracle:thin:@134.107.8.32:1521:orcl?useUnicode=true&characterEncoding=utf8
+          driver-class-name: oracle.jdbc.driver.OracleDriver
+          username: ZHT
+          password: Zht!1347
 
 
 
