@@ -49,7 +49,14 @@ public class UserLikeController {
     @GetMapping("/article")
     public boolean getArticleLike(  @RequestParam(name = "articleId",required = true) int articleId,
                                     @RequestParam(name = "userId",required = true) String userId){
-        Integer user=Integer.valueOf(userId);
+        //假设该用户没登录等情况，传过来userId=""
+        Integer user;
+        if (userId == null || userId.equals("")) {
+            // 用户ID为空或等于空字符串的处理逻辑
+             user=0;
+        }
+        else  user=Integer.valueOf(userId);
+
         return  userLikeImpl.isLikeOrNot("article",articleId,user);
     }
 }
