@@ -1,5 +1,5 @@
 #在Spring Boot应用程序中，server.port 属性是用来设置应用内嵌服务器（比如Tomcat、Jetty等）绑定并监听HTTP请求的端口。
-#当配置为 8088 时，意味着该Spring Boot应用启动后，其HTTP服务将在本地主机上通过8088端口对外提供服务。因此，用户可以通过URL如 http://localhost:8088 来访问该应用。
+#当配置为 8088 时，意味着该Spring Boot应用启动后，其HTTP服务将在本地主机上通过8088端口对外提供服务。因此，用户可以通过URL如 http://134.107.67.26:8088 来访问该应用。
 server:
   port: 8088
 
@@ -10,7 +10,7 @@ spring:
       #这一行指定了连接MySQL数据库时使用的JDBC驱动类名。
       driver-class-name: com.mysql.cj.jdbc.Driver
       #这一行是数据库连接URL，它包含了连接MySQL数据库所需的所有信息
-      url: jdbc:mysql://localhost:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
 #      url: jdbc:mysql://134.107.67.26:3306/knowledgebase?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
 
@@ -45,21 +45,29 @@ mybatis-plus:
 upload:
   video:
 #    开发环境路径
-    path: E:\\upload\\video\\
+#    path: E:\\upload\\video\\
 
 #    生产环境路径
-#     path: /upload/video/
+     path: /upload/video/
 
 
   image:
-    path: E:\\upload\\image\\
-    #     path: /upload/image/
+#    path: E:\\upload\\image\\
+         path: /upload/image/
 
   attachment:
-    path: E:\\upload\\attachment\\
-    #     path: /upload/attachment/
+#    path: E:\\upload\\attachment\\
+         path: /upload/attachment/
 
+access:
+  image:
+    path: http://134.107.67.26:8088/images/
 
+  video:
+    path: http://134.107.67.26:8088/videos/
+
+  attachment:
+    path: http://134.107.67.26:8088/attachments/
 
 
 

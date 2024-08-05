@@ -136,8 +136,10 @@ UserLikeImpl userLikeImpl;
     private static final int UPLOAD_FAILURE_ERRNO = 1;
 
     //这是图片存放在服务器上的虚拟路径
-    private  String imageAccessPath="http://localhost:8088/images/";
-    private String videoAccessPath="http://localhost:8088/videos/";
+    @Value("${access.image.path}")
+    private  String imageAccessPath;
+    @Value("${access.video.path}")
+    private String videoAccessPath;
 
     //实际能接收多个文件，假设每次只传一张图片
     @PostMapping("/upload-image")
@@ -164,7 +166,8 @@ UserLikeImpl userLikeImpl;
 
     @Value("${upload.attachment.path}")
     private String attachmentUploadPath;
-    private  String attachmentAccessPath="http://localhost:8088/attachments/";
+    @Value("${access.attachment.path}")
+    private  String attachmentAccessPath;
 
     //多个附件上传的接口
     @PostMapping("/upload-attachment")
