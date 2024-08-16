@@ -37,7 +37,7 @@ public class ArticleImpl extends ServiceImpl<ArticleMapper, Article> implements 
 
         Page<Article> articlePage = new Page<>(page, pageSize);
         QueryWrapper<Article> articleQueryWrapper = new QueryWrapper<>();
-        if(uploaderId!=null){
+        if(uploaderId!=null&&!uploaderId.equals("")){
             articleQueryWrapper.eq("uploader_id",Integer.valueOf(uploaderId));
         }
         if(queryName!=null){

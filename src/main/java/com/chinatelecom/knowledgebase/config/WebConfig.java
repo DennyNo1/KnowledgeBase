@@ -9,6 +9,7 @@ package com.chinatelecom.knowledgebase.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -24,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${upload.attachment.path}")
     private String attachmentUploadPath;
 
-//这个配置文件说来完全没有必要，只是把对http://localhost:8088/videos/**的所有类型的请求转换到videoUploadDirectory
+    //把对http://localhost:8088/videos/**的所有类型的请求转换到videoUploadDirectory。就是把真实的路径，通过接口暴露出去。
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // 使用Environment变量或application.properties中的属性来获取实际路径
@@ -36,5 +37,10 @@ public class WebConfig implements WebMvcConfigurer {
 
         registry.addResourceHandler("/attachments/**")
                 .addResourceLocations("file:" + attachmentUploadPath);
+    }
+//    给所有接口加一层前缀/api，以区分ragflow的接口。除了上面三个。
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.addPathPrefix("/api", c -> true);
     }
 }
